@@ -17,31 +17,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        reg = findViewById<View>(R.id.reg) as TextView
-        login = findViewById<View>(R.id.log) as TextView
-        email = findViewById<View>(R.id.email) as EditText
-        password = findViewById<View>(R.id.password) as EditText
-
-        reg!!.setOnClickListener {
-            val intent = Intent(this@MainActivity, RegisterActivity::class.java)
-            startActivity(intent)
-            this.finish()
-        }
-
-        login!!.setOnClickListener {
-            try {
-                login()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
+        showComics()
     }
 
-    @Throws(IOException::class)
-    private fun login(){
-
+    fun showComics() {
+        var intent = Intent(this@MainActivity, HomeActivity::class.java)
+        startActivity(intent)
     }
-
-
 }

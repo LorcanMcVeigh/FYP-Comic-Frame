@@ -12,6 +12,18 @@
         <activity
             android:name="com.example.app_fyp.RegisterActivity"
             android:label="@string/app_name" />
+<<<<<<< HEAD
+=======
+        <activity
+            android:name="com.example.app_fyp.LoadingActivity"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.example.app_fyp.HomeActivity"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.example.app_fyp.LoginActivity"
+            android:label="@string/app_name" />
+>>>>>>> The login mechanism
 
         <activity android:name=".MainActivity">
             <intent-filter>

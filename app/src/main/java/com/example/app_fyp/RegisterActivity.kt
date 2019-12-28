@@ -6,90 +6,76 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
+import com.example.app_fyp.classes.Encrypter
+import com.github.kittinunf.fuel.Fuel
+import com.google.gson.Gson
 import java.io.IOException
-import javax.crypto.ShortBufferException
-import java.security.NoSuchAlgorithmException
-import javax.crypto.NoSuchPaddingException
-import javax.crypto.BadPaddingException
-import javax.crypto.IllegalBlockSizeException
-import java.io.UnsupportedEncodingException
-import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
-import org.bouncycastle.jce.provider.BouncyCastleProvider
-import org.bouncycastle.util.encoders.Base64
-import java.security.InvalidKeyException
-import java.security.Security
+import kotlin.Exception
 
 class RegisterActivity : AppCompatActivity() {
+    private val url: String = "https://10.0.2.2:8080/"
     private var name: EditText? = null
     private var regbtn: Button? = null
+    private var logbtn: Button? = null
+    private var email :EditText? = null
+    private var password: String? = null
+    private val encrypter :Encrypter = Encrypter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+
         name = findViewById<View>(R.id.name) as EditText
         regbtn = findViewById<View>(R.id.regbtn) as Button
-        val encryptemail = encrypt(findViewById<View>(R.id.email) as EditText, name.toString())
-        val encryptpassword = encrypt(findViewById<View>(R.id.password) as EditText, encryptemail)
+        logbtn = findViewById<View>(R.id.logbtn) as Button
+        email = findViewById<View>(R.id.email) as EditText
 
+        password = encrypter.encrypt(findViewById<View>(R.id.password) as EditText, email.toString())
 
+        logbtn!!.setOnClickListener {
+            val intent = Intent(this@RegisterActivity, MainActivity::class.java)
+            startActivity(intent)
+            this.finish()
+        }
         regbtn!!.setOnClickListener {
             try {
-                register(encryptemail, encryptpassword)
+                register()
             } catch (e: IOException) {
-                e.printStackTrace()
+               getErrorMessage()
             }
         }
     }
 
     @Throws(IOException::class)
-    private fun register(email: String, password: String){
-
-    }
-
-    @Throws(UnsupportedEncodingException::class, IllegalBlockSizeException::class, BadPaddingException::class,
-        InvalidKeyException::class, NoSuchPaddingException::class, NoSuchAlgorithmException::class, ShortBufferException::class)
-    private fun encrypt(strToEncrypt: EditText?, secret_key: String): String {
-        var STE = strToEncrypt.toString()
-        Security.addProvider(BouncyCastleProvider())
-        var keyBytes: ByteArray
+    private fun register(){
+        val data = Gson().toJson(listOf(
+            "type" to "register",
+            "name" to name!!,
+            "username" to email!!,
+            "password" to password!!
+        ))
 
         try {
-            keyBytes = secret_key.toByteArray(charset("UTF8"))
-            val skey = SecretKeySpec(keyBytes, "AES")
-            val input = STE.toByteArray(charset("UTF8"))
-
-            synchronized(Cipher::class.java) {
-                val cipher = Cipher.getInstance("AES/ECB/PKCS7Padding")
-                cipher.init(Cipher.ENCRYPT_MODE, skey)
-
-                val cipherText = ByteArray(cipher.getOutputSize(input.size))
-                var ctLength = cipher.update(
-                    input, 0, input.size,
-                    cipherText, 0
-                )
-                ctLength += cipher.doFinal(cipherText, ctLength)
-                return String(
-                    Base64.encode(cipherText)
-                )
+            val (request, response, result) = Fuel.post(url).body(data).response()
+            if (response.statusCode != 200) {
+                val tv : TextView = findViewById(R.id.textfield)
+                tv.setText("Email already in use by another user")
+            } else if ( result.component2() != null ) {
+                getErrorMessage()
             }
-        } catch (uee: UnsupportedEncodingException) {
-            uee.printStackTrace()
-        } catch (ibse: IllegalBlockSizeException) {
-            ibse.printStackTrace()
-        } catch (bpe: BadPaddingException) {
-            bpe.printStackTrace()
-        } catch (ike: InvalidKeyException) {
-            ike.printStackTrace()
-        } catch (nspe: NoSuchPaddingException) {
-            nspe.printStackTrace()
-        } catch (nsae: NoSuchAlgorithmException) {
-            nsae.printStackTrace()
-        } catch (e: ShortBufferException) {
-            e.printStackTrace()
-        }
 
-        return ""
+        } catch (e : Exception) {
+            getErrorMessage()
+        }
     }
+
+    private fun getErrorMessage() {
+        val intent = Intent(this@RegisterActivity, ErrorActivity::class.java)
+        startActivity(intent)
+        this.finish()
+    }
+
+
 }

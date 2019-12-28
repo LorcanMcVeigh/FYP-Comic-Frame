@@ -1,20 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:gravity="center"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/title"
+        android:text="Catelogue"
+        android:textSize="24sp"
+        android:textAlignment="center"
+        android:textColor="#3333ff"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/textfield"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:id="@+id/email"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:paddingLeft="5dp"
+        android:layout_marginBottom="20dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:background="#fff"
         android:hint="Enter Email Address" />
     <EditText
@@ -22,28 +49,30 @@
         android:layout_height="40dp"
         android:id="@+id/password"
         android:inputType="textPassword"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
-        android:paddingLeft="5dp"
+        android:layout_marginBottom="20dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
         android:background="#fff"
         android:hint="Enter Password" />
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:id="@+id/log"
         android:text="Login"
-        android:background="#F1DB12"
+        android:background="#3333ff"
         android:textColor="#000"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
     <Button
-        android:layout_width="match_parent"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:id="@+id/reg"
         android:text="Register"
-        android:background="#F1DB12"
+        android:background="#3333ff"
         android:textColor="#000"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"

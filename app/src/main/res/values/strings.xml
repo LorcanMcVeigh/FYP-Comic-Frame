@@ -1,6 +1,3 @@
 <resources>
-    <string name="app_name">FYP.App</string>
-    <string name="edit_email" translatable="false">Enter your Email</string>
-    <string name="edit_password" translatable="false">Enter your Password</string>
-    <string name="button_send" translatable="false">Send</string>
+    <string name="app_name">Cateloge</string>
 </resources>
