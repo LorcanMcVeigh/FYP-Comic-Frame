@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Cateloge</string>
+    <string name="settings">Settings</string>
+    <string name="add">Add new Comic</string>
 </resources>
