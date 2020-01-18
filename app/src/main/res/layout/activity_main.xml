@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#1A1A1A"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -14,10 +14,10 @@
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="20dp"
         android:id="@+id/title"
-        android:text="Catelogue"
+        android:text="@string/app_name"
         android:textSize="24sp"
         android:textAlignment="center"
-        android:textColor="#3333ff"
+        android:textColor="#ff6600"
         android:paddingStart="5dp"
         android:paddingEnd="5dp" />
 
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/log"
         android:text="Login"
-        android:background="#3333ff"
+        android:background="#ff6600"
         android:textColor="#000"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/reg"
         android:text="Register"
-        android:background="#3333ff"
+        android:background="#ff6600"
         android:textColor="#000"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
