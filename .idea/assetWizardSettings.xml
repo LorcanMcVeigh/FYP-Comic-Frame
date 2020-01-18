@@ -24,7 +24,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="opacityPercent" value="60" />
+                                                <entry key="opacityPercent" value="80" />
                                                 <entry key="paddingPercent" value="-10" />
                                               </map>
                                             </option>
@@ -58,7 +58,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="themeColor" value="ffffff" />
+                                      <entry key="outputName" value="add_icon" />
+                                      <entry key="theme" value="CUSTOM" />
+                                      <entry key="themeColor" value="000000" />
                                     </map>
                                   </option>
                                 </PersistentState>

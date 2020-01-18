@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showComics() {
-        var intent = Intent(this@MainActivity, LoginActivity::class.java)
+        val intent = Intent(this@MainActivity, LoginActivity::class.java)
         startActivity(intent)
     }
 }

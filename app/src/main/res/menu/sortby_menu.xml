@@ -3,20 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/add_comic"
-        android:title="@string/add"
-        android:icon="@drawable/add_icon"
-        android:tint="@android:color/white"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/name"
+        android:title="@string/name"
+        app:showAsAction="never" />
 
     <item
-        android:id="@+id/sort"
-        android:title="Sort by"
+        android:id="@+id/artist"
+        android:title="@string/artist"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/settings"
-        android:title="@string/settings"
+        android:title="@string/colsize"
         app:showAsAction ="never" />
 
 </menu>

@@ -15,14 +15,15 @@
         android:layout_height="wrap_content"
         android:background="#4D4D4D"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:theme="@style/ToolBarStyle"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/parent" />
+        android:id="@+id/recyclerview" />
+
+
+
 
 </LinearLayout>

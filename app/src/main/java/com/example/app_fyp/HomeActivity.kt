@@ -1,9 +1,9 @@
 package com.example.app_fyp
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuInflater
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.example.app_fyp.classes.Comic
+import com.example.app_fyp.classes.ComicAdapter
 import java.util.*
 
 class HomeActivity : AppCompatActivity() {
-    private lateinit var lst : ArrayList<Comic>
-    private lateinit var viewManager: LinearLayoutManager
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private var ADD_COMIC_REQUEST = 1
+    private var lst : ArrayList<Comic> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,14 +25,50 @@ class HomeActivity : AppCompatActivity() {
         // connect and recieve the contents of the database for this user
         // load them into objects and display objects
 
-        val data = loadData()
+        displayContent()
 
-        val parent = findViewById<LinearLayout>(R.id.parent)
-        // loop over cards and add them
-        // parent.addView(card)
-        for (c in data){
-            parent.addView(c)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) : Boolean {
+        when (item.itemId) {
+            R.id.add_comic -> {
+                val intent = Intent(this@HomeActivity, AddComicActivity::class.java)
+                startActivityForResult(intent, ADD_COMIC_REQUEST)
+
+            }
+
+            R.id.sort -> {
+                // pop-up menu to choose a feature to sort by
+
+            }
+
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+
         }
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ADD_COMIC_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                val comic = intent.extras!!.getSerializable("EXTRA_COMIC") as Comic
+                val cc = lst.size
+                lst.add(comic)
+                val c = lst.size
+                if (cc != c) {
+                    finish()
+                }
+                displayContent()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        displayContent()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -41,26 +77,40 @@ class HomeActivity : AppCompatActivity() {
         return true
     }
 
-    private fun loadData() : ArrayList<CardView>{
+    private fun displayContent(sort : String = "name"){
+        loadData()
+        val parent = findViewById<RecyclerView>(R.id.recyclerview)
+        parent.layoutManager = LinearLayoutManager(this)
+        parent.adapter = ComicAdapter(lst, this)
+        // loop over cards and add them
+        // parent.addView(card)
+        /*for (c in data){
+            parent.addView(c)
+        }*/
+    }
+
+    private fun loadData() {
         // parse data (somehow Gson?)
         // make objects imageview, textview,  etc
         // load the data into comic objects
-        val view = ArrayList<CardView>()
-        lst = ArrayList<Comic>()
-        var a = ArrayList<Int>()
-        a.add(2)
-        lst.add(Comic("there","d", a, "joe"))
-        lst.add(Comic("reee","d", a, "joe"))
-        lst.add(Comic("csgo","d", a, "joe"))
-        a.add(3)
-        a.add(5)
-        a.add(4)
-        a.add(6)
-        a.add(7)
-        a.add(8)
-        a.add(9)
-        lst.add(Comic("hello", "d", a, "joe"))
-        var count = 0
+        // val view = ArrayList<CardView>()
+        if (lst.size < 1) {
+            var a = ArrayList<Int>()
+            a.add(2)
+            lst.add(Comic("X-men Dark Phoenix", "d", a, "joe"))
+            lst.add(Comic("The Flash and Green Lantern", "d", a, "joe"))
+            lst.add(Comic("Katy Keene", "d", a, "joe"))
+            a.add(3)
+            a.add(5)
+            a.add(4)
+            a.add(6)
+            a.add(7)
+            a.add(8)
+            a.add(9)
+            lst.add(Comic("Great Comics", "d", a, "joe"))
+        }
+
+        /*var count = 0
         for (c in lst) {
             count++
             // create a card
@@ -78,69 +128,8 @@ class HomeActivity : AppCompatActivity() {
             // add the card to the activity
             card.addView(ll)
             view.add(card)
-        }
+        }*/
 
-        return view
-    }
-
-    private fun createll(count : Int) :LinearLayout {
-        var ll = LinearLayout(this)
-        var lp = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        ll.layoutParams = lp
-        ll.orientation = LinearLayout.VERTICAL
-        when(count) {
-            1 -> ll.setBackgroundResource( R.drawable.c1)
-            2 -> ll.setBackgroundResource( R.drawable.c2)
-            3 -> ll.setBackgroundResource( R.drawable.c3)
-            4 -> ll.setBackgroundResource( R.drawable.c4)
-            else -> ll.setBackgroundColor(0)
-        }
-        ll.background.setAlpha(120)
-        return ll
-
-    }
-
-    private fun createCard() : CardView{
-        val card = CardView(this)
-        val layoutparams = LinearLayout.LayoutParams(
-            300, 100
-        ).apply{
-            gravity = Gravity.CENTER
-        }
-        layoutparams.marginStart = 15
-        layoutparams.marginEnd = 15
-        layoutparams.topMargin = 10
-        card.layoutParams = layoutparams
-        card.radius = 10F
-        return card
-    }
-
-    private fun createTextView(subtext : Boolean) : TextView {
-        var t = TextView(this)
-        val layout = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        layout.setMargins(35, 5, 20, 0 )
-        t.layoutParams = layout
-        t.setPadding(30,0,10,0)
-        if (subtext) {
-            t.textSize = 12F
-        }
-        else {
-            t.textSize = 20F
-        }
-        t.setTextColor(ContextCompat.getColor(this, R.color.black))
-        return t
-
-    }
-
-    private fun adapter(s : String?, card : TextView) : TextView{
-        card.text = s
-        return card
     }
 
 }

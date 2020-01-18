@@ -2,4 +2,7 @@
     <string name="app_name">Comic Organiser</string>
     <string name="settings">Settings</string>
     <string name="add">Add new Comic</string>
+    <string name="name">Name</string>
+    <string name="artist">Artist</string>
+    <string name="colsize">Collection Size</string>
 </resources>
