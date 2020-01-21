@@ -9,11 +9,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.app_fyp"
-<<<<<<< HEAD
-        minSdkVersion 17
-=======
         minSdkVersion 21
->>>>>>> The login mechanism
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
