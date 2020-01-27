@@ -3,19 +3,21 @@ package com.example.app_fyp
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
-import android.widget.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import com.example.app_fyp.classes.Comic
 import com.example.app_fyp.classes.ComicAdapter
+import kotlinx.android.synthetic.main.comic_card_layout.view.*
 import java.util.*
 
 class HomeActivity : AppCompatActivity() {
     private var ADD_COMIC_REQUEST = 1
+    private var UPDATE_COMIC_ISSSUE = 2
     private var lst : ArrayList<Comic> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +30,11 @@ class HomeActivity : AppCompatActivity() {
         displayContent()
 
 
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        displayContent()
     }
 
     override fun onOptionsItemSelected(item: MenuItem) : Boolean {
@@ -52,23 +59,32 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == ADD_COMIC_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                val comic = intent.extras!!.getSerializable("EXTRA_COMIC") as Comic
-                val cc = lst.size
+        val comic = data!!.getSerializableExtra("COMIC") as Comic
+        when ( requestCode ) {
+            ADD_COMIC_REQUEST -> { if (resultCode == RESULT_OK) {
                 lst.add(comic)
-                val c = lst.size
-                if (cc != c) {
-                    finish()
-                }
-                displayContent()
-            }
-        }
-    }
+            } else {
+                Toast.makeText(getApplicationContext(),"Unable to add Comic", Toast.LENGTH_SHORT).show();
+            } }
+            UPDATE_COMIC_ISSSUE -> { if (resultCode == Activity.RESULT_OK){
+                super.onActivityResult(requestCode, resultCode, data)
+                lst.remove(lst.find{ it.hash == comic.hash})
+                lst.add(comic)
+            } else if (resultCode == Activity.RESULT_CANCELED){
+                super.onActivityResult(requestCode, resultCode, data)
 
-    override fun onResume() {
-        super.onResume()
+                if (comic.name == "") {
+                    Toast.makeText(getApplicationContext(),"Unable to update Comic",Toast.LENGTH_SHORT).show();
+                } else {
+                    lst.remove(lst.find{ it.hash == comic.hash})
+                }
+            } else {
+                Toast.makeText(getApplicationContext(),"Comic list unable to updated",Toast.LENGTH_SHORT).show();
+            }}
+        }
+
         displayContent()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -79,14 +95,36 @@ class HomeActivity : AppCompatActivity() {
 
     private fun displayContent(sort : String = "name"){
         loadData()
+
+        when(sort){
+            "name" -> lst.sortedWith(compareBy{ it.name })
+            "artist" -> lst.sortedWith(compareBy{ it.artist })
+            else -> lst.sortedWith(compareBy{ it.name })
+        }
+
         val parent = findViewById<RecyclerView>(R.id.recyclerview)
         parent.layoutManager = LinearLayoutManager(this)
         parent.adapter = ComicAdapter(lst, this)
-        // loop over cards and add them
-        // parent.addView(card)
-        /*for (c in data){
-            parent.addView(c)
-        }*/
+
+        val count = parent.childCount
+        Log.v("FA: Child count", count.toString())
+        var i = 0
+        while ( i < count ){
+            val c : View = parent.getChildAt(i)
+            c.setOnClickListener {
+                startNewActivity(c.ll.tv1.text.toString())
+            }
+            i++
+        }
+    }
+
+    private fun startNewActivity(id : String) {
+
+        val intent = Intent(this@HomeActivity, ComicActivity::class.java)
+        // find comic reference in lst list
+        val comic = lst.find { it.name == id  }
+        intent.putExtra("COMIC", comic)
+        startActivityForResult(intent, UPDATE_COMIC_ISSSUE)
     }
 
     private fun loadData() {
@@ -95,11 +133,11 @@ class HomeActivity : AppCompatActivity() {
         // load the data into comic objects
         // val view = ArrayList<CardView>()
         if (lst.size < 1) {
-            var a = ArrayList<Int>()
+            val a = ArrayList<Int>()
             a.add(2)
-            lst.add(Comic("X-men Dark Phoenix", "d", a, "joe"))
-            lst.add(Comic("The Flash and Green Lantern", "d", a, "joe"))
-            lst.add(Comic("Katy Keene", "d", a, "joe"))
+            lst.add(Comic("X-men Dark Phoenix", "d", a, "joe", 1))
+            lst.add(Comic("The Flash and Green Lantern", "d", a, "joe",2))
+            lst.add(Comic("Katy Keene", "d", a, "joe",3))
             a.add(3)
             a.add(5)
             a.add(4)
@@ -107,7 +145,8 @@ class HomeActivity : AppCompatActivity() {
             a.add(7)
             a.add(8)
             a.add(9)
-            lst.add(Comic("Great Comics", "d", a, "joe"))
+            lst.add(Comic("Great Comics", "d", a, "joe",4))
+
         }
 
         /*var count = 0

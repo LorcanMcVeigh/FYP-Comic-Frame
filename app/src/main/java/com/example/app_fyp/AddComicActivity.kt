@@ -1,5 +1,6 @@
 package com.example.app_fyp
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -30,6 +31,7 @@ class AddComicActivity : AppCompatActivity(){
     private lateinit var photo : Button
     private lateinit var add : Button
     private lateinit var image : ImageView
+    private lateinit var search : Button
     private  var pathphoto : String? = null
 
 
@@ -45,6 +47,7 @@ class AddComicActivity : AppCompatActivity(){
         photo = findViewById(R.id.photo)
         add = findViewById(R.id.add_comic)
         image = findViewById(R.id.image)
+        search = findViewById(R.id.search)
 
         photo.setOnClickListener{
             try {
@@ -52,6 +55,13 @@ class AddComicActivity : AppCompatActivity(){
             } catch (e : Exception) {
 
             }
+        }
+
+        search.setOnClickListener {
+            // start new intent
+            val intent = Intent(this@AddComicActivity, SearchComicActivity::class.java)
+            intent.putExtra("COMIC_NAME", name.text)
+            startActivityForResult(intent, 2)
         }
         // set up listeners on the buttons
         add.setOnClickListener{
@@ -71,11 +81,19 @@ class AddComicActivity : AppCompatActivity(){
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            val imageBitmap = data!!.extras!!.get("data") as Bitmap
-            image.setImageBitmap(imageBitmap)
+        if (resultCode == Activity.RESULT_OK){
+            when (requestCode) {
+                1 ->  {
+                    val imageBitmap = data!!.extras!!.get("data") as Bitmap
+                    image.setImageBitmap(imageBitmap)
+                }
+                2 -> { /* fill in the data from comicvine if any */}
+                else -> {}
+            }
         }
     }
+
+
     @Throws(Exception::class)
     private fun buildComic() : Comic {
         var p : String? = ""
@@ -89,14 +107,14 @@ class AddComicActivity : AppCompatActivity(){
         } catch (e : Exception) {
             errorMessage(text, "Only add 1 issue number")
         }
-        return Comic(name.toString(), p, a ,artist.toString() )
+        return Comic(name.text.toString(), p, a ,artist.text.toString(), this.hashCode() )
 
     }
 
     private fun endActivity(c : Comic){
         var i = Intent()
         i.putExtra("EXTRA_COMIC", c)
-        setResult(1, i)
+        setResult(Activity.RESULT_OK, i)
         finish()
     }
 
