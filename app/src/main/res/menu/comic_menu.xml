@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/favorite"
+        android:title="Add to Favorites"
+        android:icon="@drawable/fave_icon"
+        android:tint="@android:color/white"
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/delete"
-        android:title="Delete Comic"
-        >
-    </item>
+        android:title="Delete Comic" />
+
 </menu>
