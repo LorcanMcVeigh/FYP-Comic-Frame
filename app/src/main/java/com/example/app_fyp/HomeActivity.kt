@@ -59,20 +59,22 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val comic = data!!.getSerializableExtra("COMIC") as Comic
+        var comic : Comic?
         when ( requestCode ) {
             ADD_COMIC_REQUEST -> { if (resultCode == RESULT_OK) {
+                comic = data!!.getSerializableExtra("COMIC") as Comic
                 lst.add(comic)
             } else {
                 Toast.makeText(getApplicationContext(),"Unable to add Comic", Toast.LENGTH_SHORT).show();
             } }
             UPDATE_COMIC_ISSSUE -> { if (resultCode == Activity.RESULT_OK){
                 super.onActivityResult(requestCode, resultCode, data)
-                lst.remove(lst.find{ it.hash == comic.hash})
+                comic = data!!.getSerializableExtra("COMIC") as Comic
+                lst.remove(lst.find{ it.hash == comic!!.hash})
                 lst.add(comic)
             } else if (resultCode == Activity.RESULT_CANCELED){
                 super.onActivityResult(requestCode, resultCode, data)
-
+                comic = data!!.getSerializableExtra("COMIC") as Comic
                 if (comic.name == "") {
                     Toast.makeText(getApplicationContext(),"Unable to update Comic",Toast.LENGTH_SHORT).show();
                 } else {

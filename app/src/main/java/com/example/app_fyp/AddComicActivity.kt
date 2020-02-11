@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -60,7 +62,7 @@ class AddComicActivity : AppCompatActivity(){
         search.setOnClickListener {
             // start new intent
             val intent = Intent(this@AddComicActivity, SearchComicActivity::class.java)
-            intent.putExtra("COMIC_NAME", name.text)
+            intent.putExtra("COMIC_NAME", name.text.toString())
             startActivityForResult(intent, 2)
         }
         // set up listeners on the buttons
@@ -77,6 +79,12 @@ class AddComicActivity : AppCompatActivity(){
         // if the camera takes a photo then store photo
         // when add is pressed update server
         // add to display
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.options_menu, menu)
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
