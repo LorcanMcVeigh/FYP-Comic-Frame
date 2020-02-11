@@ -53,26 +53,35 @@ class SearchComicActivity : AppCompatActivity() {
     }
 
     private fun loadJson(query: String): APIResult? {
-        val m: APIResult?
-        val ( _, respon, result) = query.httpGet().header(mapOf("User-Agent" to useragent)).response()
-        if (respon.statusCode == 200) {
-            try {
-                val jsondata = result.get().toString()
-                val gson = Gson()
-                m = gson.fromJson(jsondata, APIResult::class.java)
-                if (m.ecode != "ok") {
-                    Toast.makeText(getApplicationContext(),"Recieved Error from comicvine.com", Toast.LENGTH_SHORT).show()
+        var n : APIResult? = null
+        query.httpGet().header(mapOf("User-Agent" to useragent)).response { _, respon, result ->
+            var m: APIResult? = null
+            if (respon.statusCode == 200) {
+                try {
+                    val jsondata = result.get().toString()
+                    val gson = Gson()
+                    m = gson.fromJson(jsondata, APIResult::class.java)
+                    if (m.ecode != "ok") {
+                        Toast.makeText(
+                            getApplicationContext(),
+                            "Recieved Error from comicvine.com",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: Exception) {
-                Toast.makeText(getApplicationContext(),e.toString(), Toast.LENGTH_SHORT).show()
-                return null
+            } else {
+                Log.v("SEHGDSCVBERSAHDFBDSFS", result.component2().toString())
+                Toast.makeText(
+                    getApplicationContext(),
+                    result.component2().toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        } else {
-            Log.v("SEHGDSCVBERSAHDFBDSFS", result.component2().toString())
-            Toast.makeText(getApplicationContext(),result.component2().toString(), Toast.LENGTH_SHORT).show()
-            return null
+            n = m
         }
-        return m
+        return n
     }
 
     private fun displayResults(content : ArrayList<ComicResult>) {
