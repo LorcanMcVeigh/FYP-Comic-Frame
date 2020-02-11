@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:background="@color/black">
-    <ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@color/black">
 
         <TextView
+            android:layout_marginTop="40dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv"
@@ -67,16 +72,18 @@
             android:background="@drawable/custombutton"
             android:text="Search ComicVine.com"
             android:id="@+id/search" />
+
         <Button
+            android:id="@+id/photo"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:id="@+id/photo"
-            android:text="Take Photo"
-            android:background="@drawable/custombutton"
-            android:textColor="#000"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/custombutton"
+            android:text="Take Photo"
+            android:textColor="#000" />
+
         <Button
             android:layout_width="160dp"
             android:layout_height="wrap_content"
@@ -87,6 +94,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"/>
-    </ScrollView>
-
+        </LinearLayout>
+</ScrollView>
 </LinearLayout>
+
+
