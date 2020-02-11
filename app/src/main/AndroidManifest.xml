@@ -28,9 +28,11 @@
             android:label="@string/app_name" />
         <activity
             android:name="com.example.app_fyp.AddComicActivity"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/app_name" />
         <activity
             android:name="com.example.app_fyp.ComicActivity"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/app_name" />
         <activity
             android:name="com.example.app_fyp.LoadingActivity"

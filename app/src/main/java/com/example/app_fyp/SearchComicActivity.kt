@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -15,15 +16,17 @@ import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.success
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import java.lang.Exception
 import java.net.URL
 
 class SearchComicActivity : AppCompatActivity() {
-    lateinit var ll : LinearLayout
-    lateinit var comicname : String
+    lateinit var rl : RelativeLayout
+    var comicname : String = ""
     private val apikey : String = "4663e24bc7473eaef65158d7ec9d077342145a6c"
     private val query: String =
-        "https://comicvine.gamespot.com/api/search/?api_key=${{apikey}}&format=json&resources=issue&query=%22${{comicname}}"
+        "https://comicvine.gamespot.com/api/search/?api_key=${apikey}&format=json&resources=issue&query=%22${comicname}%22"
     private val useragent : String =
         "User-Agent':'Mozilla/5.0 (X11; Linux; Android 5.1.1; AndroidSDK built for x86 Build/LMY48X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.0.0 Moblie Safari/537.36 GSA/4.1.29.1706998.x86"
 
@@ -32,7 +35,7 @@ class SearchComicActivity : AppCompatActivity() {
         setContentView(R.layout.activity_searchcomic)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
-        ll = findViewById(R.id.ll)
+        rl = findViewById(R.id.rl)
 
         val i = intent.getStringExtra("COMIC_NAME")
 
@@ -41,35 +44,30 @@ class SearchComicActivity : AppCompatActivity() {
 
     private fun Search(name: String) {
         comicname = name.replace(" ", "%20")
-        val result = loadJson(query)
-        if (result == null ) {
-            Toast.makeText(getApplicationContext(),"No comic matched that name", Toast.LENGTH_SHORT).show()
-            finish()
-        } else {
-            displayResults(result.result)
-        }
 
-
+        loadJson(query)
     }
 
-    private fun loadJson(query: String): APIResult? {
-        var n : APIResult? = null
+    private fun loadJson(query: String) {
         query.httpGet().header(mapOf("User-Agent" to useragent)).response { _, respon, result ->
-            var m: APIResult? = null
+            var m: ArrayList<ComicResult> = ArrayList()
             if (respon.statusCode == 200) {
                 try {
-                    val jsondata = result.get().toString()
-                    val gson = Gson()
-                    m = gson.fromJson(jsondata, APIResult::class.java)
-                    if (m.ecode != "ok") {
-                        Toast.makeText(
-                            getApplicationContext(),
-                            "Recieved Error from comicvine.com",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    val jsondata = JsonParser().parse(result.get().toString(Charsets.UTF_8)).getAsJsonObject()
+                    val res = jsondata["error"].toString().replace("\"", "")
+                    if (res == "OK") {
+                        val g = Gson()
+                        Log.v("SAFSVDFVDFVDHASDDG", jsondata["results"].toString())
+                        val itemtype = object : TypeToken<ArrayList<ComicResult>>() {}.type
+                        m = Gson().fromJson<ArrayList<ComicResult>>(jsondata["results"], itemtype)
+                        val b = m !is ArrayList<ComicResult>
+                        Log.v("AWIBFLKJHBFSDKFKSAB", b.toString())
+                        displayResults(m)
+
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show()
+
+                   Log.v("A;WIBFLKJHBFSDKFKDAS", e.printStackTrace().toString())
                 }
             } else {
                 Log.v("SEHGDSCVBERSAHDFBDSFS", result.component2().toString())
@@ -79,23 +77,31 @@ class SearchComicActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-            n = m
         }
-        return n
     }
 
     private fun displayResults(content : ArrayList<ComicResult>) {
-        for (c in content) {
-            val b = buildImageView()
-            Glide.with(this).load(c.images.get("thumb_url")).into(b)
-            ll.addView(b)
+        Log.v("AWIBFLKJHBFSDKFKSAB", content[1].image.toString())
+        val cont = content.iterator()
+        var num = 0
+        while (cont.hasNext()){
+            val cr = cont.next()
+            if (cr.image["thumb_url"].isNullOrEmpty()) {
+                //Log.v("AWIBFLKJHBFSDKFKSAB", it.images.get("thumb_url").toString())
+                val b = buildImageView(num)
+                Glide.with(this).load(cr.image["thumb_url"].toString()).into(b)
+                rl.addView(b)
+            }
+            num++
         }
     }
 
-    private fun buildImageView() : ImageView {
+    private fun buildImageView(n: Int) : ImageView {
         val image = ImageView(this)
-        val params = LinearLayout.LayoutParams(300, 900)
-        params.setMargins(15,10,15,5)
+        val params = RelativeLayout.LayoutParams(300, 900)
+        if (n % 2 == 0){
+            params.setMargins(15,10,15,5)
+        }
         image.layoutParams = params
         return image
     }

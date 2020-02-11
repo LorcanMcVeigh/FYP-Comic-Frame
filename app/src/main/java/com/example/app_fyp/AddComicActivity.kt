@@ -115,7 +115,7 @@ class AddComicActivity : AppCompatActivity(){
         } catch (e : Exception) {
             errorMessage(text, "Only add 1 issue number")
         }
-        return Comic(name.text.toString(), p, a ,artist.text.toString(), this.hashCode() )
+        return Comic(name.text.toString(), p, a ,artist.text.toString(), this.hashCode(), false )
 
     }
 

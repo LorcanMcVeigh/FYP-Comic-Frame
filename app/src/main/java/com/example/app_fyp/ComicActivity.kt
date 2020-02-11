@@ -84,10 +84,11 @@ class ComicActivity : AppCompatActivity(){
     override fun onOptionsItemSelected(item: MenuItem) : Boolean {
         when (item.itemId) {
             R.id.delete -> {
-                // pop-up menu to choose a feature to sort by
                 endActivity("COMIC", Activity.RESULT_CANCELED, data)
             }
-
+            R.id.favorite -> {
+                data.isFave = !data.isFave
+            }
             else -> {
                 super.onOptionsItemSelected(item)
             }
@@ -105,6 +106,7 @@ class ComicActivity : AppCompatActivity(){
         //Glide.with(this).load(data.image!!).into(image)
     }
 
+    @Throws(Exception::class)
     private fun buildComic() : Comic {
 
         val i = ArrayList<Int>()
