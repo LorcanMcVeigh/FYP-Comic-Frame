@@ -21,30 +21,33 @@
         android:theme="@style/AppTheme"
         android:minSdkVersion="18">
         <activity
-            android:name="com.example.app_fyp.RegisterActivity"
+            android:name="com.example.app_fyp.Login.activites.RegisterActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.example.app_fyp.SearchComicActivity"
+            android:name="com.example.app_fyp.search.activities.SearchComicActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.example.app_fyp.AddComicActivity"
+            android:name="com.example.app_fyp.information.activities.AddComicActivity"
             android:windowSoftInputMode="adjustPan"
             android:label="@string/app_name" />
         <activity
-            android:name="com.example.app_fyp.ComicActivity"
+            android:name="com.example.app_fyp.information.activities.ComicActivity"
             android:windowSoftInputMode="adjustPan"
             android:label="@string/app_name" />
         <activity
             android:name="com.example.app_fyp.LoadingActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.example.app_fyp.HomeActivity"
+            android:name="com.example.app_fyp.ui.activities.HomeActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="com.example.app_fyp.LoginActivity"
+            android:name="com.example.app_fyp.ui.activities.WelcomeActivity"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.example.app_fyp.Login.activites.LoginActivity"
             android:label="@string/app_name" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
