@@ -100,8 +100,8 @@ class HomeActivity : AppCompatActivity() {
                     } catch (e:Exception){
                         favelst.remove(favelst.find{ it.hash == comic.hash})
                     }
-                    if (comic.group != "" ){
-                        grouplst.get(comic.group)!!.add(comic)
+                    if (comic.group != "" && comic.group != null){
+                        grouplst.get(comic.group.toString())!!.add(comic)
                     } else {
                         lst.add(comic)
                     }
