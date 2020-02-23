@@ -11,4 +11,13 @@
         android:id="@+id/delete"
         android:title="Delete Comic" />
 
+    <item
+        android:id="@+id/addtogroup"
+        android:title="Add to Group" >
+
+        <menu
+            android:id="@+id/groupmenu" />
+
+    </item>
+
 </menu>

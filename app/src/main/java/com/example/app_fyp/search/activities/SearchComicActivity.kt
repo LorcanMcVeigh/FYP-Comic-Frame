@@ -1,12 +1,16 @@
 package com.example.app_fyp.search.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
+import co.metalab.asyncawait.async
 import com.bumptech.glide.Glide
 import com.example.app_fyp.R
+import com.example.app_fyp.classes.Comic
 import com.example.app_fyp.search.comicvine.ComicResult
 import com.example.app_fyp.search.comicvine.ComicVineAPIQuery
 
@@ -29,13 +33,31 @@ class SearchComicActivity : AppCompatActivity() {
     private fun Search(name: String) {
         comicname = name.replace(" ", "%20")
 
-        ComicVineAPIQuery(comicname)
+        val data = ComicVineAPIQuery(comicname)
+        data.loadJson()
+
+        suspend {
+
+        }
+        Log.v("AWIBFLKJHBFSDKFKSAB", data.search)
+        while (data.data.size < 0 ){
+           continue
+        }
+        displayResults(data.data)
+
+
+    }
+
+    private fun endActivity(c : Comic?){
+        val i = Intent()
+        i.putExtra("NEW_COMIC", c)
+        setResult(Activity.RESULT_OK, i)
+        finish()
     }
 
 
-
     private fun displayResults(content : ArrayList<ComicResult>) {
-        Log.v("AWIBFLKJHBFSDKFKSAB", content[1].image.toString())
+        Log.v("AWIBFLKJHBFSDKFKSAB", content.toString())
         val cont = content.iterator()
         var num = 0
         while (cont.hasNext()){

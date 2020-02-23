@@ -1,14 +1,16 @@
 package com.example.app_fyp.information.activities
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.transition.TransitionManager
+import android.view.*
 import android.widget.*
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.get
 import com.example.app_fyp.R
 import com.example.app_fyp.classes.Comic
 import kotlin.Exception
@@ -23,13 +25,20 @@ class ComicActivity : AppCompatActivity(){
     private lateinit var b2 : Button
     private lateinit var update : Button
     private lateinit var data : Comic
+    private lateinit var gn : ArrayList<String>
+    private lateinit var rl : RelativeLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comic)
-        setSupportActionBar(findViewById(R.id.my_toolbar))
-
+        data = intent.getSerializableExtra("COMIC") as Comic
+        gn = intent.getStringArrayListExtra("GROUPNAMES") as ArrayList<String>
+        val t : Toolbar? = findViewById(R.id.my_toolbar)
+        t!!.setTitle(data.name)
+        setSupportActionBar(t)
+        rl = findViewById(R.id.rl)
         image = findViewById(R.id.image)
         tv1 = findViewById(R.id.tv1)
         tv2 = findViewById(R.id.tv2)
@@ -69,7 +78,7 @@ class ComicActivity : AppCompatActivity(){
         }
 
 
-        data = intent.getSerializableExtra("COMIC") as Comic
+
 
         fillinData(data)
     }
@@ -77,6 +86,20 @@ class ComicActivity : AppCompatActivity(){
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.comic_menu, menu)
+
+
+        val subm = menu!!.getItem(2).subMenu
+        var ind : Int =  0
+        for (i in gn) {
+            subm.add(2,ind, 0 ,i)
+            val d = subm.getItem(ind)
+            d.setOnMenuItemClickListener {
+                data.group = d.title.toString()
+                Toast.makeText(applicationContext,"${data.name} has been added to ${d.title} ",Toast.LENGTH_SHORT).show()
+
+                true
+            }
+        }
         return true
     }
 
@@ -88,6 +111,9 @@ class ComicActivity : AppCompatActivity(){
             }
             R.id.favorite -> {
                 data.isFave = !data.isFave
+            }
+            R.id.addtogroup -> {
+                true
             }
             else -> {
                 super.onOptionsItemSelected(item)
@@ -105,6 +131,54 @@ class ComicActivity : AppCompatActivity(){
         tv2.setText(data.issue!!.joinToString(prefix = "Issues : ", separator = ","))
         //Glide.with(this).load(data.image!!).into(image)
     }
+
+    /*private fun makePopup(){
+
+        // Inflate a custom view using layout inflater
+        val sv = ScrollView(this)
+        val view = LinearLayout(this)
+
+        val popupWindow = PopupWindow(
+            sv, // Custom view to show in popup window
+            LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
+            LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+        )
+
+
+        view.setBackgroundColor(Color.WHITE)
+        sv.addView(view)
+        for ( i in gn) {
+            val tv = TextView(this)
+            val params : ViewGroup.LayoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            tv.layoutParams = params
+            tv.text = i
+            tv.setPadding(5,2,5,2)
+            tv.setOnClickListener {
+                data.group = tv.text.toString()
+                Toast.makeText(applicationContext,"${data.name} has been added to ${tv.text} ",Toast.LENGTH_SHORT).show()
+                popupWindow.dismiss()
+            }
+            view.addView(tv)
+        }
+        // Initialize a new instance of popup window
+
+
+
+        // Finally, show the popup window on app
+        TransitionManager.beginDelayedTransition(rl)
+        popupWindow.showAtLocation(
+            rl, // Location to display popup window
+            Gravity.CENTER, // Exact position of layout to display popup
+            0, // X offset
+            0 // Y offset
+        )
+        popupWindow.isFocusable = true
+        popupWindow.update()
+
+    }*/
 
     @Throws(Exception::class)
     private fun buildComic() : Comic {
