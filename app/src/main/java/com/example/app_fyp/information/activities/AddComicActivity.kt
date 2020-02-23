@@ -97,12 +97,14 @@ class AddComicActivity : AppCompatActivity(){
                 }
                 2 -> {
                     /* fill in the data from comicvine if any */
-                    val comic = intent.getSerializableExtra("NEW_COMIC") as Comic?
+                    val comic = data!!.getSerializableExtra("NEW_COMIC") as Comic?
+                    Log.v("AHTNFKERNGVKEVNKE", comic.toString())
                     if (comic == null) {
                         Toast.makeText(getApplicationContext(),"No Comic of that name on comicvine.com", Toast.LENGTH_SHORT).show()
 
                     } else {
                         name.setText(comic.name)
+                        issue.setText(1.toString())
                         Glide.with(this).load(comic.image).into(image)
                     }
                 }

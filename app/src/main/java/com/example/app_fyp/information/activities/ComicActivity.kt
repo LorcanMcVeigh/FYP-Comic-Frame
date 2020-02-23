@@ -7,6 +7,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
@@ -202,6 +203,7 @@ class ComicActivity : AppCompatActivity(){
     private fun endActivity(name : String, result : Int, c : Comic?){
         val i = Intent()
         i.putExtra(name, c)
+        Log.v("HNAIKVNSKVRNWKVNDSKV", c!!.issue.toString())
         setResult(result, i)
         finish()
     }
