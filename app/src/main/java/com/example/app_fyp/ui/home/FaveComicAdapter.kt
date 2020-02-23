@@ -18,7 +18,7 @@ import com.example.app_fyp.information.activities.ComicActivity
 import com.example.app_fyp.classes.Comic
 import kotlinx.android.synthetic.main.activity_home.*
 
-class FaveComicAdapter(val items: ArrayList<Comic>, val cont: Activity) : RecyclerView.Adapter<FaveComicAdapter.FaveComicItemViewHolder>() {
+class FaveComicAdapter(val items: ArrayList<Comic>?, val cont: Activity, val groupname : ArrayList<String>) : RecyclerView.Adapter<FaveComicAdapter.FaveComicItemViewHolder>() {
     private lateinit var mContext : Context
     class FaveComicItemViewHolder(cv: CardView) : RecyclerView.ViewHolder(cv){
         internal var title: TextView = cv.findViewById(R.id.tv1)
@@ -51,7 +51,7 @@ class FaveComicAdapter(val items: ArrayList<Comic>, val cont: Activity) : Recycl
 
     override fun onBindViewHolder(holder: FaveComicItemViewHolder, position: Int) {
         // assign/fill in the values
-        holder.title.text  = items[position].name
+        holder.title.text  = items!![position].name
         //holder.ll.setBackgroundResource(R.drawable.c1)
         //holder.ll.background.alpha= 120
         holder.card.setBackgroundResource(R.drawable.c1)
@@ -60,12 +60,13 @@ class FaveComicAdapter(val items: ArrayList<Comic>, val cont: Activity) : Recycl
             val intent = Intent(cont, ComicActivity::class.java)
             // find comic reference in lst list
             intent.putExtra("COMIC", items[position])
+            intent.putExtra("GROUPNAMES", groupname)
             cont.startActivityForResult(intent, 2)
 
         }
         //Glide.with(cont).load(items[position].image!!).into(holder.image!!)
     }
-    override fun getItemCount() = items.size
+    override fun getItemCount() = items!!.size
 
 
 }

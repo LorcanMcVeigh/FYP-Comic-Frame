@@ -13,7 +13,7 @@ import com.example.app_fyp.R
 import com.example.app_fyp.information.activities.ComicActivity
 import com.example.app_fyp.classes.Comic
 
-class ComicAdapter(val items: ArrayList<Comic>, val cont: Activity) : RecyclerView.Adapter<ComicAdapter.ComicItemViewHolder>() {
+class ComicAdapter(val items: ArrayList<Comic>, val cont: Activity, val groupname  : ArrayList<String>) : RecyclerView.Adapter<ComicAdapter.ComicItemViewHolder>() {
     private lateinit var mContext : Context
     class ComicItemViewHolder(linearLayout: LinearLayout) : RecyclerView.ViewHolder(linearLayout){
         internal var title: TextView = linearLayout.findViewById(R.id.tv1)
@@ -55,6 +55,7 @@ class ComicAdapter(val items: ArrayList<Comic>, val cont: Activity) : RecyclerVi
                 val intent = Intent(cont, ComicActivity::class.java)
                 // find comic reference in lst list
                 intent.putExtra("COMIC", items[position])
+            intent.putExtra("GROUPNAMES", groupname)
                 cont.startActivityForResult(intent, 2)
 
         }

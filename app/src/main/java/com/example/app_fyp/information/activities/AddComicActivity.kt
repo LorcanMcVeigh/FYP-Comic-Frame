@@ -12,12 +12,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.bumptech.glide.Glide
 import com.example.app_fyp.R
 import com.example.app_fyp.classes.Comic
 import com.example.app_fyp.search.activities.SearchComicActivity
@@ -97,7 +95,17 @@ class AddComicActivity : AppCompatActivity(){
                     val imageBitmap = data!!.extras!!.get("data") as Bitmap
                     image.setImageBitmap(imageBitmap)
                 }
-                2 -> { /* fill in the data from comicvine if any */}
+                2 -> {
+                    /* fill in the data from comicvine if any */
+                    val comic = intent.getSerializableExtra("NEW_COMIC") as Comic?
+                    if (comic == null) {
+                        Toast.makeText(getApplicationContext(),"No Comic of that name on comicvine.com", Toast.LENGTH_SHORT).show()
+
+                    } else {
+                        name.setText(comic.name)
+                        Glide.with(this).load(comic.image).into(image)
+                    }
+                }
                 else -> {}
             }
         }
@@ -118,7 +126,7 @@ class AddComicActivity : AppCompatActivity(){
             errorMessage(text, "Only add 1 issue number")
         }
         Log.v("ASGVBCDSVREEHGBFD", p.toString())
-        return Comic(name.text.toString(), p, a ,artist.text.toString(), this.hashCode(), false )
+        return Comic(name.text.toString(), p, a ,artist.text.toString(), this.hashCode(), false, null )
 
     }
 
