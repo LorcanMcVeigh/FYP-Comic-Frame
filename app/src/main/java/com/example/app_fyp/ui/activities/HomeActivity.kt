@@ -6,20 +6,19 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
-import android.transition.Scene
-import android.transition.TransitionManager
+import android.transition.*
+import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginBottom
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app_fyp.information.activities.AddComicActivity
 import com.example.app_fyp.R
 import com.example.app_fyp.classes.Comic
-import com.example.app_fyp.ui.home.ComicAdapter
 import com.example.app_fyp.ui.home.FaveComicAdapter
-import java.util.*
+import kotlinx.coroutines.delay
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -32,14 +31,26 @@ class HomeActivity : AppCompatActivity() {
     private var grouplst : HashMap<String, ArrayList<Comic>> = HashMap()
     private lateinit var root_layout : LinearLayout
     private lateinit var sv : LinearLayout
+    private lateinit var load : RelativeLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            sharedElementReenterTransition
+            sharedElementReturnTransition
+            allowEnterTransitionOverlap
+            allowReturnTransitionOverlap
+        }
         setContentView(R.layout.activity_home)
-        setSupportActionBar(findViewById(R.id.my_toolbar))
+        val t : Toolbar? = findViewById(R.id.my_toolbar)
+        t!!.setOnClickListener { displayContent(grouplst) }
+        setSupportActionBar(t)
         // connect and recieve the contents of the database for this user
-        // load them into objects and display objects
+        // load them into objects and display objects#
+        load = findViewById(R.id.loadingPanel)
+        load.bringToFront()
         root_layout = findViewById(R.id.root_layout)
         sv = findViewById(R.id.ll)
         loadData()
@@ -49,11 +60,14 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        displayContent()
+        displayContent(grouplst)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) : Boolean {
         when (item.itemId) {
+            R.id.search -> {
+                makeSearchPopup(R.layout.search_window, "")
+            }
             R.id.add_comic -> {
                 val intent = Intent(this@HomeActivity, AddComicActivity::class.java)
                 startActivityForResult(intent, ADD_COMIC_REQUEST)
@@ -65,7 +79,7 @@ class HomeActivity : AppCompatActivity() {
 
             }
             R.id.makegroup -> {
-                makePopup()
+                makePopup(R.layout.group_window, "Group added")
             }
 
             else -> {
@@ -91,19 +105,22 @@ class HomeActivity : AppCompatActivity() {
                 try {
                     comic = data!!.getSerializableExtra("COMIC") as Comic
                 } catch (e: KotlinNullPointerException){
-                    comic = Comic("", "",ArrayList(), "", 0, false, null)
+                    comic = Comic("", "",0, "", 0, false, null)
                 }
                 if (resultCode == Activity.RESULT_OK){
-                    comic = data!!.getSerializableExtra("COMIC") as Comic
-                    try {
-                        lst.remove(lst.find { it.hash == comic.hash })
-                    } catch (e:Exception){
-                        favelst.remove(favelst.find{ it.hash == comic.hash})
-                    }
                     if (comic.group != "" && comic.group != null){
-                        grouplst.get(comic.group.toString())!!.add(comic)
+                        val l = grouplst.get(comic.group.toString())
+                        if (l!!.find{ it.hash == comic.hash} == null ) {
+                            l.add(comic)
+                            grouplst.put(comic.group.toString(), l)
+                        }
+
                     } else {
-                        lst.add(comic)
+                        Toast.makeText(
+                            getApplicationContext(),
+                            "Unable to update Comic",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                 } else if (resultCode == Activity.RESULT_CANCELED){
@@ -113,8 +130,9 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 else {
-                Toast.makeText(getApplicationContext(),"Comic list unable to updated",Toast.LENGTH_SHORT).show();
-            }}
+                    Toast.makeText(getApplicationContext(),"Comic list unable to updated",Toast.LENGTH_SHORT).show();
+                }
+            }
 
             DELETE_COMIC -> {
                 comic = data!!.getSerializableExtra("COMIC") as Comic
@@ -130,21 +148,22 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        displayContent()
+        //displayContent()
 
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.options_menu, menu)
+
         return true
     }
 
-    private fun makePopup(){
+    private fun makeSearchPopup(layout : Int, message  : String){
         val inflater:LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         // Inflate a custom view using layout inflater
-        val view = inflater.inflate(R.layout.group_window,null)
+        val view = inflater.inflate(layout,null)
 
         // Initialize a new instance of popup window
         val popupWindow = PopupWindow(
@@ -153,19 +172,25 @@ class HomeActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT // Window height
         )
 
-        val tv = view.findViewById<EditText>(R.id.newgroupname)
-        val buttonPopup = view.findViewById<Button>(R.id.addgroup)
+        val tv = view.findViewById<EditText>(R.id.searchname)
+        val buttonPopup = view.findViewById<Button>(R.id.search)
 
 
         // Set a click listener for popup's button widget
         buttonPopup.setOnClickListener{
             // Dismiss the popup window
             if (tv.text.toString() != ""){
-                grouplst.put(tv.text.toString(), ArrayList<Comic>())
-                Toast.makeText(applicationContext,"Group ${tv.text} added",Toast.LENGTH_SHORT).show()
+                load.visibility = View.VISIBLE
+                val s = HashMap<String, ArrayList<Comic>>()
+                for ((i,v) in grouplst){
+                    val f : ArrayList<Comic> = ArrayList(v.filter{ it.name.toUpperCase().contains(tv.text.toString().toUpperCase())})
+                    if (f.size > 0){
+                        s.put(i, f)
+                    }
+                }
+                displayContent(s)
             }
             popupWindow.dismiss()
-            displayContent()
         }
 
         // Finally, show the popup window on app
@@ -181,19 +206,61 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    private fun displayContent(sort : String = "name"){
+    private fun makePopup(layout : Int, message  : String){
+        val inflater:LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+        // Inflate a custom view using layout inflater
+        val view = inflater.inflate(layout,null)
+
+        // Initialize a new instance of popup window
+        val popupWindow = PopupWindow(
+            view, // Custom view to show in popup window
+            LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
+            LinearLayout.LayoutParams.WRAP_CONTENT // Window height
+        )
+
+        val tv = view.findViewById<EditText>(R.id.searchname)
+        val buttonPopup = view.findViewById<Button>(R.id.search)
+
+
+        // Set a click listener for popup's button widget
+        buttonPopup.setOnClickListener{
+            // Dismiss the popup window
+            if (tv.text.toString() != ""){
+                grouplst.put(tv.text.toString(), ArrayList<Comic>())
+                Toast.makeText(applicationContext,message,Toast.LENGTH_SHORT).show()
+            }
+            popupWindow.dismiss()
+            displayContent(grouplst)
+        }
+
+        // Finally, show the popup window on app
+        TransitionManager.beginDelayedTransition(root_layout)
+        popupWindow.showAtLocation(
+            root_layout, // Location to display popup window
+            Gravity.CENTER, // Exact position of layout to display popup
+            0, // X offset
+            0 // Y offset
+        )
+        popupWindow.isFocusable = true
+        popupWindow.update()
+
+    }
+
+    private fun displayContent( groups :  HashMap<String, ArrayList<Comic>>,sort : String = "name"){
+
         sv.removeAllViewsInLayout()
         when(sort){
             "name" -> lst.sortedWith(compareBy{ it.name })
             "artist" -> lst.sortedWith(compareBy{ it.artist })
             else -> lst.sortedWith(compareBy{ it.name })
         }
-        val gn = grouplst.keys
+        val gn = groups.keys
         val groupnames = ArrayList<String>()
         for ( i in gn){
             groupnames.add(i)
         }
-        for ((g,v) in grouplst) {
+        for ((g,v) in groups) {
             val grc = buildRecycleView(v, groupnames)
 
             val tv = buildTextView(g)
@@ -201,13 +268,8 @@ class HomeActivity : AppCompatActivity() {
             sv.addView(grc)
 
         }
+        load.visibility = View.GONE
 
-        val rc = RecyclerView(this)//findViewById<RecyclerView>(R.id.recyclerview)
-        rc.layoutManager = LinearLayoutManager(this)
-        val tv = buildTextView("collection")
-        rc.adapter = ComicAdapter(lst, this, groupnames)
-        sv.addView(tv)
-        sv.addView(rc)
     }
 
     private fun buildTextView(name : String) : TextView {
@@ -247,23 +309,15 @@ class HomeActivity : AppCompatActivity() {
         // load the data into comic objects
         // val view = ArrayList<CardView>()
         if (lst.size < 1) {
-            val a = ArrayList<Int>()
-            a.add(2)
-            lst.add(Comic("X-men Dark Phoenix", "d", a, "joe", 1, false, null ))
-            favelst.add(Comic("The Flash and Green Lantern", "d", a, "joe",2, true, "favorite"))
-            favelst.add(Comic("Katy Keene", "d", a, "joe",3, true, "favorite"))
-            a.add(3)
-            a.add(5)
-            a.add(4)
-            a.add(6)
-            a.add(7)
-            a.add(8)
-            a.add(9)
-            lst.add(Comic("Great Comics", "d", a, "joe",4, false,null ))
+            lst.add(Comic("X-men Dark Phoenix", "d", 2, "joe", 1, false, "default" ))
+            favelst.add(Comic("The Flash and Green Lantern", "d", 7, "joe",2, true, "favorite"))
+            favelst.add(Comic("Katy Keene", "d", 9, "joe",3, true, "favorite"))
+            lst.add(Comic("Great Comics", "d", 1, "joe",4, false,"default" ))
 
-            grouplst.put("Favorite", favelst)
+            grouplst.put("favorite", favelst)
+            grouplst.put("default", lst)
 
-            displayContent()
+            displayContent(grouplst)
 
         }
 

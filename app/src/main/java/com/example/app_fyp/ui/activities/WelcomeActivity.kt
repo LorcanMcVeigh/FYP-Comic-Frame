@@ -4,7 +4,10 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
+import android.transition.Explode
+import android.transition.Fade
 import android.util.Log
+import android.view.Window
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -19,6 +22,11 @@ class WelcomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        with(window){
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            enterTransition = Explode()
+            exitTransition = Fade()
+        }
         setContentView(R.layout.activity_welcome)
         t = findViewById(R.id.tv1)
         val max = font_list.size-1
