@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     fun showComics() {
         val intent = Intent(this@MainActivity, LoginActivity::class.java)
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+        //overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         startActivity(intent)
 
     }

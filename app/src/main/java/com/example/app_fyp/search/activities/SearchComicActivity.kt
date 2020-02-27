@@ -1,11 +1,13 @@
 package com.example.app_fyp.search.activities
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -29,6 +31,10 @@ class SearchComicActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        with(window){
+            sharedElementReturnTransition
+            sharedElementReenterTransition
+        }
         setContentView(R.layout.activity_searchcomic)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
@@ -39,8 +45,8 @@ class SearchComicActivity : AppCompatActivity() {
         Search(i)
     }
 
-    private fun Search(name: String) {
-        comicname = name.replace(" ", "%20")
+    private fun Search(name: String?) {
+        comicname = name!!.replace(" ", "%20")
 
         val data = ComicVineAPIQuery(comicname)
         runBlocking {
@@ -56,21 +62,19 @@ class SearchComicActivity : AppCompatActivity() {
 
     }
 
-    private fun endActivity(anme : String, url : String){
-        val c = Comic(anme, url, arrayListOf(1),null,hashCode(),false,null )
+    private fun endActivity( t : TextView, url : String){
+        val c = Comic(t.text.toString(), url, 1,null,hashCode(),false,null )
         val i = Intent()
         Log.v("SFMNAKRVNMEKV", c.toString())
         i.putExtra("NEW_COMIC", c)
         setResult(Activity.RESULT_OK, i)
-        finish()
+        finishAfterTransition()
     }
 
 
     private fun displayResults(content : ArrayList<ComicResult>) {
         Log.v("AWIBFLKJHBFSDKFKSAB", content.toString())
         val cont = content.iterator()
-        var colnum = 0
-        var rownum = 0
         var cr: ComicResult
         var cr2: ComicResult? = null
         while (cont.hasNext()) {
@@ -92,7 +96,9 @@ class SearchComicActivity : AppCompatActivity() {
                 tv1.text = cr.name
 
                 b.setOnClickListener {
-                    endActivity(tv1.text.toString(), image )
+                    b.transitionName = "imageTransition"
+                    //tv1.transitionName = "textTransition"
+                    endActivity( tv1, image )
                 }
             }
             if (!cr2!!.image["thumb_url"].isNullOrEmpty()) {
@@ -103,9 +109,10 @@ class SearchComicActivity : AppCompatActivity() {
                 tv2.text = cr2.name
 
                 b.setOnClickListener {
-                    endActivity(tv2.text.toString(), image )
+                    b.transitionName = "imageTransition"
+                    //tv2.transitionName = "textTransition"
+                    endActivity( tv2, image )
                 }
-
 
             }
 

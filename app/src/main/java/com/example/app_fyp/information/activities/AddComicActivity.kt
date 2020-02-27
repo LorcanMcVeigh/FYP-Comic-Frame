@@ -1,6 +1,7 @@
 package com.example.app_fyp.information.activities
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -8,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.transition.Explode
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -39,6 +41,13 @@ class AddComicActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        with(window){
+            exitTransition = Explode()
+            sharedElementReturnTransition
+            sharedElementReenterTransition
+        }
+
         setContentView(R.layout.activity_addcomic)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
@@ -63,17 +72,14 @@ class AddComicActivity : AppCompatActivity(){
             // start new intent
             val intent = Intent(this@AddComicActivity, SearchComicActivity::class.java)
             intent.putExtra("COMIC_NAME", name.text.toString())
-            startActivityForResult(intent, 2)
+            val options = ActivityOptions.makeSceneTransitionAnimation(this, image, "imageTransition")
+            startActivityForResult(intent, 2, options.toBundle())
         }
         // set up listeners on the buttons
         add.setOnClickListener{
 
                 val c = buildComic()
-                if (c.issue!!.size > 0  ){
-                    endActivity(c)
-                } else {
-                    errorMessage(text, "Only add 1 issue number")
-                }
+                endActivity(c)
 
         }
         // if the camera takes a photo then store photo
@@ -120,12 +126,11 @@ class AddComicActivity : AppCompatActivity(){
         if ( pathphoto != null ) {
             p = pathphoto
         }
-        val a = ArrayList<Int>()
+        var a = 1
         try {
-            a.add(issue.text.toString().toInt())
-
+            a = issue.text.toString().toInt()
         } catch (e : Exception) {
-            errorMessage(text, "Only add 1 issue number")
+            errorMessage(text, "Please add a valid issue number")
         }
         Log.v("ASGVBCDSVREEHGBFD", p.toString())
         return Comic(name.text.toString(), p, a ,artist.text.toString(), this.hashCode(), false, null )

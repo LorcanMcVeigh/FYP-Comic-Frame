@@ -1,6 +1,7 @@
 package com.example.app_fyp.ui.home
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.transition.Fade
@@ -23,6 +24,7 @@ class FaveComicAdapter(val items: ArrayList<Comic>?, val cont: Activity, val gro
     class FaveComicItemViewHolder(cv: CardView) : RecyclerView.ViewHolder(cv){
         internal var title: TextView = cv.findViewById(R.id.tv1)
         internal var card : CardView = cv.findViewById(R.id.favecardview)
+        internal var i : ImageView = cv.findViewById(R.id.i)
         //internal var ll : LinearLayout = linearLayout.findViewById(R.id.linlayout)
         // this does not get initalised
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
@@ -61,7 +63,9 @@ class FaveComicAdapter(val items: ArrayList<Comic>?, val cont: Activity, val gro
             // find comic reference in lst list
             intent.putExtra("COMIC", items[position])
             intent.putExtra("GROUPNAMES", groupname)
-            cont.startActivityForResult(intent, 2)
+            holder.i.transitionName = "image"
+            val options = ActivityOptions.makeSceneTransitionAnimation(cont, holder.i, "image")
+            cont.startActivityForResult(intent,  2, options.toBundle())
 
         }
         //Glide.with(cont).load(items[position].image!!).into(holder.image!!)

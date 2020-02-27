@@ -1,11 +1,14 @@
 package com.example.app_fyp.information.activities
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.transition.Explode
+import android.transition.Fade
 import android.transition.TransitionManager
 import android.util.Log
 import android.view.*
@@ -15,6 +18,7 @@ import androidx.core.view.get
 import com.example.app_fyp.R
 import com.example.app_fyp.classes.Comic
 import kotlin.Exception
+import android.util.Pair as UtilPair
 
 class ComicActivity : AppCompatActivity(){
     private lateinit var image : ImageView
@@ -28,20 +32,32 @@ class ComicActivity : AppCompatActivity(){
     private lateinit var data : Comic
     private lateinit var gn : ArrayList<String>
     private lateinit var rl : RelativeLayout
+    private var nameChange : Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
+        with(window) {
+            requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            sharedElementReturnTransition
+            sharedElementExitTransition
+            allowEnterTransitionOverlap
+            allowReturnTransitionOverlap
+        }
+
         setContentView(R.layout.activity_comic)
         data = intent.getSerializableExtra("COMIC") as Comic
         gn = intent.getStringArrayListExtra("GROUPNAMES") as ArrayList<String>
         val t : Toolbar? = findViewById(R.id.my_toolbar)
-        t!!.setTitle(data.name)
+        t!!.title = data.name
         setSupportActionBar(t)
         rl = findViewById(R.id.rl)
         image = findViewById(R.id.image)
+        image.transitionName = "image"
         tv1 = findViewById(R.id.tv1)
+        tv1.transitionName = "text"
         tv2 = findViewById(R.id.tv2)
         ed1 = findViewById(R.id.et1)
         ed2 = findViewById(R.id.et2)
@@ -51,35 +67,40 @@ class ComicActivity : AppCompatActivity(){
 
         tv1.setOnClickListener {
             ed1.setText(tv1.text)
+            tv1.visibility = View.GONE
             ed1.visibility = View.VISIBLE
             b1.visibility = View.VISIBLE
         }
 
         tv2.setOnClickListener {
             ed2.setText(tv2.text)
+            tv2.visibility = View.GONE
             ed2.visibility = View.VISIBLE
             b2.visibility = View.VISIBLE
         }
 
         b1.setOnClickListener {
             tv1.setText(ed1.text)
+            nameChange = true
             ed1.visibility = View.GONE
+            tv1.visibility = View.VISIBLE
             b1.visibility = View.GONE
         }
 
         b2.setOnClickListener {
+            t.setTitle(ed2.text)
             tv2.setText(ed2.text)
             ed2.visibility = View.GONE
+            tv2.visibility = View.VISIBLE
             b2.visibility = View.GONE
         }
 
         update.setOnClickListener {
             val c = buildComic()
+            image.transitionName = "image"
+            tv1.transitionName = "text"
             endActivity( "COMIC", Activity.RESULT_OK,c)
         }
-
-
-
 
         fillinData(data)
     }
@@ -90,18 +111,19 @@ class ComicActivity : AppCompatActivity(){
 
 
         val subm = menu!!.getItem(2).subMenu
-        var ind : Int =  0
+        val ind : Int =  0
         for (i in gn) {
             subm.add(2,ind, 0 ,i)
             val d = subm.getItem(ind)
             d.setOnMenuItemClickListener {
                 data.group = d.title.toString()
                 Toast.makeText(applicationContext,"${data.name} has been added to ${d.title} ",Toast.LENGTH_SHORT).show()
-
                 true
             }
+
         }
         return true
+
     }
 
 
@@ -113,9 +135,7 @@ class ComicActivity : AppCompatActivity(){
             R.id.favorite -> {
                 data.isFave = !data.isFave
             }
-            R.id.addtogroup -> {
-                true
-            }
+
             else -> {
                 super.onOptionsItemSelected(item)
             }
@@ -128,74 +148,21 @@ class ComicActivity : AppCompatActivity(){
 
     private fun fillinData(data : Comic){
         image.setImageResource(R.drawable.c1)
-        tv1.setText(data.name)
-        tv2.setText(data.issue!!.joinToString(prefix = "Issues : ", separator = ","))
+        tv1.text = data.name
+        tv2.text = data.issue.toString()
         //Glide.with(this).load(data.image!!).into(image)
     }
 
-    /*private fun makePopup(){
-
-        // Inflate a custom view using layout inflater
-        val sv = ScrollView(this)
-        val view = LinearLayout(this)
-
-        val popupWindow = PopupWindow(
-            sv, // Custom view to show in popup window
-            LinearLayout.LayoutParams.WRAP_CONTENT, // Width of popup window
-            LinearLayout.LayoutParams.WRAP_CONTENT // Window height
-        )
-
-
-        view.setBackgroundColor(Color.WHITE)
-        sv.addView(view)
-        for ( i in gn) {
-            val tv = TextView(this)
-            val params : ViewGroup.LayoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            tv.layoutParams = params
-            tv.text = i
-            tv.setPadding(5,2,5,2)
-            tv.setOnClickListener {
-                data.group = tv.text.toString()
-                Toast.makeText(applicationContext,"${data.name} has been added to ${tv.text} ",Toast.LENGTH_SHORT).show()
-                popupWindow.dismiss()
-            }
-            view.addView(tv)
-        }
-        // Initialize a new instance of popup window
-
-
-
-        // Finally, show the popup window on app
-        TransitionManager.beginDelayedTransition(rl)
-        popupWindow.showAtLocation(
-            rl, // Location to display popup window
-            Gravity.CENTER, // Exact position of layout to display popup
-            0, // X offset
-            0 // Y offset
-        )
-        popupWindow.isFocusable = true
-        popupWindow.update()
-
-    }*/
 
     @Throws(Exception::class)
     private fun buildComic() : Comic {
 
-        val i = ArrayList<Int>()
-        val issues = tv2.text.filter { it.toString() == "," || it.toString() == "Issues : " }
-        for (l in issues) {
-            try {
-                i.add(l.toInt())
-            } catch (e : Exception) {
-                endActivity("COMIC", Activity.RESULT_CANCELED, null)
-            }
-        }
-
         data.name = tv1.text.toString()
-        data.issue = i
+        try {
+            data.issue = tv2.text.toString().toInt()
+        } catch ( e: Exception) {
+            data.issue = 1
+        }
 
         return data
     }
@@ -205,6 +172,10 @@ class ComicActivity : AppCompatActivity(){
         i.putExtra(name, c)
         Log.v("HNAIKVNSKVRNWKVNDSKV", c!!.issue.toString())
         setResult(result, i)
-        finish()
+
+        finishAfterTransition()
+
+
+
     }
 }
