@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/add_comic"
+        android:title="@string/add"
+        android:icon="@drawable/add_icon"
+        android:tint="@android:color/white" />
+
+    <item
+        android:id="@+id/makegroup"
+        android:title="New Group"
+        app:showAsAction="never" />
+
+</menu>

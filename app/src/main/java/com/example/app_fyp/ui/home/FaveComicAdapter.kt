@@ -11,6 +11,7 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,7 @@ class FaveComicAdapter(val items: ArrayList<Comic>?, val cont: Activity, val gro
     class FaveComicItemViewHolder(cv: CardView) : RecyclerView.ViewHolder(cv){
         internal var title: TextView = cv.findViewById(R.id.tv1)
         internal var card : CardView = cv.findViewById(R.id.favecardview)
+        internal var image : ImageView = cv.findViewById(R.id.i)
         internal var i : ImageView = cv.findViewById(R.id.i)
         //internal var ll : LinearLayout = linearLayout.findViewById(R.id.linlayout)
         // this does not get initalised
@@ -53,11 +55,11 @@ class FaveComicAdapter(val items: ArrayList<Comic>?, val cont: Activity, val gro
 
     override fun onBindViewHolder(holder: FaveComicItemViewHolder, position: Int) {
         // assign/fill in the values
-        holder.title.text  = items!![position].name
+        holder.title.text = items!![position].name
         //holder.ll.setBackgroundResource(R.drawable.c1)
         //holder.ll.background.alpha= 120
-        holder.card.setBackgroundResource(R.drawable.c1)
-        holder.card.background.alpha = 120
+        holder.i.setImageResource(R.drawable.c1)
+        //holder.card.background.alpha = 120
         holder.card.setOnClickListener(){
             val intent = Intent(cont, ComicActivity::class.java)
             // find comic reference in lst list
