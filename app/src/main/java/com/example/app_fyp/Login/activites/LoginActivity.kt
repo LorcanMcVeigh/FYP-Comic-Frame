@@ -34,6 +34,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val e = Explode()
         e.addTarget(R.id.email)
         with(window) {
@@ -42,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
             //exitTransition.addTarget(R.id.email)
         }
         setContentView(R.layout.activity_main)
-
+        setSupportActionBar(findViewById(R.id.my_toolbar))
         reg = findViewById<View>(R.id.reg) as TextView
         login = findViewById<View>(R.id.log) as TextView
         email = findViewById<View>(R.id.email) as EditText
@@ -57,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
 
         email!!.setOnClickListener {
             password!!.layoutParams.width = 200
-            email!!.layoutParams.width = 10//LinearLayout.LayoutParams.MATCH_PARENT
+            email!!.layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT
         }
 
         password!!.setOnClickListener {

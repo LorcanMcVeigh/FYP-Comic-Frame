@@ -3,11 +3,9 @@ package com.example.app_fyp.ui.activities
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.transition.*
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
@@ -18,7 +16,6 @@ import com.example.app_fyp.information.activities.AddComicActivity
 import com.example.app_fyp.R
 import com.example.app_fyp.classes.Comic
 import com.example.app_fyp.ui.home.FaveComicAdapter
-import kotlinx.coroutines.delay
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -29,9 +26,10 @@ class HomeActivity : AppCompatActivity() {
     private var lst : ArrayList<Comic> = ArrayList()
     private var favelst : ArrayList<Comic> = ArrayList()
     private var grouplst : HashMap<String, ArrayList<Comic>> = HashMap()
-    private lateinit var root_layout : LinearLayout
+    private lateinit var root_layout : ScrollView
     private lateinit var sv : LinearLayout
-    private lateinit var load : RelativeLayout
+    private lateinit var fab : View
+    //private lateinit var load : RelativeLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,10 +47,32 @@ class HomeActivity : AppCompatActivity() {
         setSupportActionBar(t)
         // connect and recieve the contents of the database for this user
         // load them into objects and display objects#
-        load = findViewById(R.id.loadingPanel)
-        load.bringToFront()
+        //load = findViewById(R.id.loadingPanel)
+        //load.bringToFront()
         root_layout = findViewById(R.id.root_layout)
         sv = findViewById(R.id.ll)
+        fab = findViewById(R.id.fab)
+        fab.setOnClickListener {
+            val popup = PopupMenu(this, fab)
+
+            val inflater = popup.menuInflater
+            inflater.inflate(R.menu.add_menu, popup.menu)
+            popup.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.add_comic -> {
+                        val intent = Intent(this@HomeActivity, AddComicActivity::class.java)
+                        startActivityForResult(intent, ADD_COMIC_REQUEST)
+                    }
+                    R.id.makegroup -> {
+                        makePopup()
+                    }
+
+                }
+                true
+            }
+            popup.show()
+
+        }
         loadData()
 
 
@@ -66,20 +86,12 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) : Boolean {
         when (item.itemId) {
             R.id.search -> {
-                makeSearchPopup(R.layout.search_window, "")
-            }
-            R.id.add_comic -> {
-                val intent = Intent(this@HomeActivity, AddComicActivity::class.java)
-                startActivityForResult(intent, ADD_COMIC_REQUEST)
-
+                makeSearchPopup()
             }
 
             R.id.sort -> {
                 // pop-up menu to choose a feature to sort by
 
-            }
-            R.id.makegroup -> {
-                makePopup(R.layout.group_window, "Group added")
             }
 
             else -> {
@@ -159,11 +171,11 @@ class HomeActivity : AppCompatActivity() {
         return true
     }
 
-    private fun makeSearchPopup(layout : Int, message  : String){
+    private fun makeSearchPopup(){
         val inflater:LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         // Inflate a custom view using layout inflater
-        val view = inflater.inflate(layout,null)
+        val view = inflater.inflate(R.layout.search_window,null)
 
         // Initialize a new instance of popup window
         val popupWindow = PopupWindow(
@@ -180,7 +192,7 @@ class HomeActivity : AppCompatActivity() {
         buttonPopup.setOnClickListener{
             // Dismiss the popup window
             if (tv.text.toString() != ""){
-                load.visibility = View.VISIBLE
+                //load.visibility = View.VISIBLE
                 val s = HashMap<String, ArrayList<Comic>>()
                 for ((i,v) in grouplst){
                     val f : ArrayList<Comic> = ArrayList(v.filter{ it.name.toUpperCase().contains(tv.text.toString().toUpperCase())})
@@ -206,11 +218,11 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    private fun makePopup(layout : Int, message  : String){
+    private fun makePopup(){
         val inflater:LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         // Inflate a custom view using layout inflater
-        val view = inflater.inflate(layout,null)
+        val view = inflater.inflate(R.layout.group_window,null)
 
         // Initialize a new instance of popup window
         val popupWindow = PopupWindow(
@@ -219,8 +231,8 @@ class HomeActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT // Window height
         )
 
-        val tv = view.findViewById<EditText>(R.id.searchname)
-        val buttonPopup = view.findViewById<Button>(R.id.search)
+        val tv = view.findViewById<EditText>(R.id.newgroupname)
+        val buttonPopup = view.findViewById<Button>(R.id.addgroup)
 
 
         // Set a click listener for popup's button widget
@@ -228,7 +240,7 @@ class HomeActivity : AppCompatActivity() {
             // Dismiss the popup window
             if (tv.text.toString() != ""){
                 grouplst.put(tv.text.toString(), ArrayList<Comic>())
-                Toast.makeText(applicationContext,message,Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext,"Group Added!",Toast.LENGTH_SHORT).show()
             }
             popupWindow.dismiss()
             displayContent(grouplst)
@@ -268,7 +280,7 @@ class HomeActivity : AppCompatActivity() {
             sv.addView(grc)
 
         }
-        load.visibility = View.GONE
+        //load.visibility = View.GONE
 
     }
 
@@ -278,9 +290,11 @@ class HomeActivity : AppCompatActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        tv.layoutParams = params
+        val margin = ViewGroup.MarginLayoutParams(params)
+        margin.bottomMargin = 20
+        tv.layoutParams = margin
         tv.setPadding(40, 0,30,5)
-        tv.setTextColor(Color.parseColor("#FFFFFF"))
+        tv.setTextColor(Color.parseColor("#000000"))
         tv.textSize = 20f
         tv.text = name
         return tv
@@ -309,13 +323,13 @@ class HomeActivity : AppCompatActivity() {
         // load the data into comic objects
         // val view = ArrayList<CardView>()
         if (lst.size < 1) {
-            lst.add(Comic("X-men Dark Phoenix", "d", 2, "joe", 1, false, "default" ))
-            favelst.add(Comic("The Flash and Green Lantern", "d", 7, "joe",2, true, "favorite"))
-            favelst.add(Comic("Katy Keene", "d", 9, "joe",3, true, "favorite"))
-            lst.add(Comic("Great Comics", "d", 1, "joe",4, false,"default" ))
+            lst.add(Comic("X-men Dark Phoenix", "d", 2, "joe", 1, false, "Default" ))
+            favelst.add(Comic("The Flash and Green Lantern", "d", 7, "joe",2, true, "Favorite"))
+            favelst.add(Comic("Katy Keene", "d", 9, "joe",3, true, "Favorite"))
+            lst.add(Comic("Great Comics", "d", 1, "joe",4, false,"Default" ))
 
-            grouplst.put("favorite", favelst)
-            grouplst.put("default", lst)
+            grouplst.put("Favorite", favelst)
+            grouplst.put("Default", lst)
 
             displayContent(grouplst)
 

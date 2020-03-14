@@ -23,7 +23,7 @@
         android:layout_marginLeft="20dp"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:background="#fff"
+        android:drawableLeft="@drawable/ident_icon"
         android:hint="Name" />
 
     <EditText
@@ -33,9 +33,9 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
+        android:drawableLeft="@drawable/email_icon"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:background="#fff"
         android:hint="Email Address" />
 
     <EditText
@@ -48,7 +48,7 @@
         android:layout_marginLeft="20dp"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:background="#fff"
+        android:drawableLeft="@drawable/pass_icon"
         android:hint="Password" />
 
     <Button
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/regbtn"
         android:text="Register"
-        android:background="#3333ff"
+        android:background="@drawable/custombutton"
         android:textColor="#000"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/logbtn"
         android:text="Already have an account?"
-        android:background="#3333ff"
+        android:background="@drawable/custombutton"
         android:textColor="#000"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"

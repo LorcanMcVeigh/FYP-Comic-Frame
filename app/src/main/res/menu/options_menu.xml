@@ -10,18 +10,6 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/add_comic"
-        android:title="@string/add"
-        android:icon="@drawable/add_icon"
-        android:tint="@android:color/white"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/makegroup"
-        android:title="New Group"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/sort"
         android:title="Sort by"
         app:showAsAction="never" />
