@@ -24,13 +24,12 @@ import java.io.IOException
 
 class LoginActivity : AppCompatActivity() {
     private val url: String = ""
-    private var reg: TextView? = null
-    private var login: TextView? = null
-    private var email: EditText? = null
-    private var password: EditText? = null
+    private lateinit var reg: TextView
+    private lateinit var login: TextView
+    private lateinit var email: EditText
+    private lateinit var password: EditText
     private lateinit var ll : LinearLayout
-    private val encrypter : Encrypter =
-        Encrypter()
+    private val encrypter : Encrypter = Encrypter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +43,22 @@ class LoginActivity : AppCompatActivity() {
         }
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.my_toolbar))
+
+        getViews()
+
+
+    }
+
+    private fun getViews(){
         reg = findViewById<View>(R.id.reg) as TextView
         login = findViewById<View>(R.id.log) as TextView
         email = findViewById<View>(R.id.email) as EditText
         //email!!.getBackground().setColorFilter( Color)
         password = findViewById<View>(R.id.password) as EditText
         ll = findViewById(R.id.ll)
+    }
+
+    private fun setListeners(){
 
         ll.setOnClickListener {
             email!!.layoutParams.width = 200
@@ -87,6 +96,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
 
     @Throws(IOException::class)
     private fun login(){

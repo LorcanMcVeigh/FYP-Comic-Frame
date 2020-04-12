@@ -38,12 +38,17 @@ class SearchComicActivity : AppCompatActivity() {
         setContentView(R.layout.activity_searchcomic)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
-        rl = findViewById(R.id.ll2)
+        getViews()
 
         val i = intent.getStringExtra("COMIC_NAME")
 
         Search(i)
     }
+
+    private fun getViews(){
+        rl = findViewById(R.id.ll2)
+    }
+
 
     private fun Search(name: String?) {
         comicname = name!!.replace(" ", "%20")
@@ -53,7 +58,6 @@ class SearchComicActivity : AppCompatActivity() {
             data.loadJson()
         }
         while (data.data.size <= 0) {
-            Log.v("SWGSVDREAGFDDFD", "NOW HERERE")
             Thread.sleep(1000)
         }
 
@@ -65,7 +69,6 @@ class SearchComicActivity : AppCompatActivity() {
     private fun endActivity( t : TextView, url : String){
         val c = Comic(t.text.toString(), url, 1,null,hashCode(),false,null )
         val i = Intent()
-        Log.v("SFMNAKRVNMEKV", c.toString())
         i.putExtra("NEW_COMIC", c)
         setResult(Activity.RESULT_OK, i)
         finishAfterTransition()
@@ -118,6 +121,12 @@ class SearchComicActivity : AppCompatActivity() {
 
             rl.addView(view)
         }
+    }
+
+    private fun insertComic(cr : ComicResult, v : View): View{
+        if (cr!!.image["thu"])
+
+
     }
 
 }

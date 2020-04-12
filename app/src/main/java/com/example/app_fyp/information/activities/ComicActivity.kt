@@ -30,15 +30,16 @@ class ComicActivity : AppCompatActivity(){
     private lateinit var b2 : Button
     private lateinit var update : Button
     private lateinit var data : Comic
+    private lateinit var t : Toolbar
     private lateinit var gn : ArrayList<String>
     private lateinit var rl : RelativeLayout
     private var nameChange : Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
+        // setting simple activity transitions
         with(window) {
             requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
             sharedElementReturnTransition
@@ -48,62 +49,21 @@ class ComicActivity : AppCompatActivity(){
         }
 
         setContentView(R.layout.activity_comic)
-        data = intent.getSerializableExtra("COMIC") as Comic
-        gn = intent.getStringArrayListExtra("GROUPNAMES") as ArrayList<String>
-        val t : Toolbar? = findViewById(R.id.my_toolbar)
-        t!!.title = data.name
+
+        getData()
+
+
+        setToolbarTitle()
         setSupportActionBar(t)
-        rl = findViewById(R.id.rl)
-        image = findViewById(R.id.image)
-        image.transitionName = "image"
-        tv1 = findViewById(R.id.tv1)
-        tv1.transitionName = "text"
-        tv2 = findViewById(R.id.tv2)
-        ed1 = findViewById(R.id.et1)
-        ed2 = findViewById(R.id.et2)
-        b1 = findViewById(R.id.b1)
-        b2 = findViewById(R.id.b2)
-        update = findViewById(R.id.update)
 
-        tv1.setOnClickListener {
-            ed1.setText(tv1.text)
-            tv1.visibility = View.GONE
-            ed1.visibility = View.VISIBLE
-            b1.visibility = View.VISIBLE
-        }
+        getViews()
 
-        tv2.setOnClickListener {
-            ed2.setText(tv2.text)
-            tv2.visibility = View.GONE
-            ed2.visibility = View.VISIBLE
-            b2.visibility = View.VISIBLE
-        }
+        setListeners()
 
-        b1.setOnClickListener {
-            tv1.setText(ed1.text)
-            nameChange = true
-            ed1.visibility = View.GONE
-            tv1.visibility = View.VISIBLE
-            b1.visibility = View.GONE
-        }
-
-        b2.setOnClickListener {
-            t.setTitle(ed2.text)
-            tv2.setText(ed2.text)
-            ed2.visibility = View.GONE
-            tv2.visibility = View.VISIBLE
-            b2.visibility = View.GONE
-        }
-
-        update.setOnClickListener {
-            val c = buildComic()
-            image.transitionName = "image"
-            tv1.transitionName = "text"
-            endActivity( "COMIC", Activity.RESULT_OK,c)
-        }
 
         fillinData(data)
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -144,9 +104,93 @@ class ComicActivity : AppCompatActivity(){
         return true
     }
 
+    private fun setToolbarTitle() {
+        // sets the title on the toobar for the activity
+        val t : Toolbar? = findViewById(R.id.my_toolbar)
+        t!!.title = data.name
+    }
 
+    private fun setListeners(){
+        /*
+        * sets listeners on the buttons and textboxs
+        * so that the user can change the title and issue number
+        */
+
+
+        tv1.setOnClickListener {
+            ed1.setText(tv1.text)
+
+            setVisiblity(ed1, tv1, b1, 1)
+
+        }
+
+        tv2.setOnClickListener {
+            ed2.setText(tv2.text)
+
+            setVisiblity(ed2, tv2, b2, 1 )
+        }
+
+        b1.setOnClickListener {
+            tv1.setText(ed1.text)
+            nameChange = true
+
+            setVisiblity(ed1, tv1, b1, -1)
+
+        }
+
+        b2.setOnClickListener {
+            t.setTitle(ed2.text)
+            tv2.setText(ed2.text)
+            setVisiblity(ed2, tv2, b2, -1)
+        }
+
+        update.setOnClickListener {
+            val c = buildComic()
+            image.transitionName = "image"
+            tv1.transitionName = "text"
+            endActivity( "COMIC", Activity.RESULT_OK,c)
+        }
+
+    }
+
+    fun setVisiblity(e : EditText, t : TextView, b : Button, i : Int ){
+        when (i) {
+            1 -> {
+                t.visibility = View.GONE
+                e.visibility = View.VISIBLE
+                b.visibility = View.VISIBLE
+            }
+            -1 -> {
+                ed1.visibility = View.GONE
+                tv1.visibility = View.VISIBLE
+                b1.visibility = View.GONE
+            }
+
+            else -> {
+                true
+            }
+        }
+
+    }
+
+    private fun getViews() {
+        // gets all the views in the activity
+
+        rl = findViewById(R.id.rl)
+        image = findViewById(R.id.image)
+        image.transitionName = "image"
+        tv1 = findViewById(R.id.tv1)
+        tv1.transitionName = "text"
+        tv2 = findViewById(R.id.tv2)
+        ed1 = findViewById(R.id.et1)
+        ed2 = findViewById(R.id.et2)
+        b1 = findViewById(R.id.b1)
+        b2 = findViewById(R.id.b2)
+        update = findViewById(R.id.update)
+    }
 
     private fun fillinData(data : Comic){
+        // fills in the data into the views in the activity
         image.setImageResource(R.drawable.c1)
         tv1.text = data.name
         tv2.text = data.issue.toString()
@@ -156,7 +200,7 @@ class ComicActivity : AppCompatActivity(){
 
     @Throws(Exception::class)
     private fun buildComic() : Comic {
-
+        // builds a comic object
         data.name = tv1.text.toString()
         try {
             data.issue = tv2.text.toString().toInt()
@@ -165,6 +209,13 @@ class ComicActivity : AppCompatActivity(){
         }
 
         return data
+    }
+
+    private fun getData(){
+        /* custom function that recieves and load data from an intent into
+           custom data objects */
+        data = intent.getSerializableExtra("COMIC") as Comic
+        gn = intent.getStringArrayListExtra("GROUPNAMES") as ArrayList<String>
     }
 
     private fun endActivity(name : String, result : Int, c : Comic?){

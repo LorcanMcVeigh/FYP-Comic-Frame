@@ -36,7 +36,7 @@ class AddComicActivity : AppCompatActivity(){
     private lateinit var add : Button
     private lateinit var image : ImageView
     private lateinit var search : Button
-    private  var pathphoto : String? = null
+    private lateinit var pathphoto : String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,40 +51,10 @@ class AddComicActivity : AppCompatActivity(){
         setContentView(R.layout.activity_addcomic)
         setSupportActionBar(findViewById(R.id.my_toolbar))
 
-        text = findViewById(R.id.tv)
-        name = findViewById(R.id.comic_name)
-        issue = findViewById(R.id.issue)
-        artist = findViewById(R.id.artist)
-        photo = findViewById(R.id.photo)
-        add = findViewById(R.id.add_comic)
-        image = findViewById(R.id.image)
-        search = findViewById(R.id.search)
+        getViews()
 
-        photo.setOnClickListener{
-            try {
-                dispatchTakePictureIntent()
-            } catch (e : Exception) {
+        setListeners()
 
-            }
-        }
-
-        search.setOnClickListener {
-            // start new intent
-            val intent = Intent(this@AddComicActivity, SearchComicActivity::class.java)
-            intent.putExtra("COMIC_NAME", name.text.toString())
-            val options = ActivityOptions.makeSceneTransitionAnimation(this, image, "imageTransition")
-            startActivityForResult(intent, 2, options.toBundle())
-        }
-        // set up listeners on the buttons
-        add.setOnClickListener{
-
-                val c = buildComic()
-                endActivity(c)
-
-        }
-        // if the camera takes a photo then store photo
-        // when add is pressed update server
-        // add to display
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -104,7 +74,7 @@ class AddComicActivity : AppCompatActivity(){
                 2 -> {
                     /* fill in the data from comicvine if any */
                     val comic = data!!.getSerializableExtra("NEW_COMIC") as Comic?
-                    Log.v("AHTNFKERNGVKEVNKE", comic.toString())
+
                     if (comic == null) {
                         Toast.makeText(getApplicationContext(),"No Comic of that name on comicvine.com", Toast.LENGTH_SHORT).show()
 
@@ -114,11 +84,50 @@ class AddComicActivity : AppCompatActivity(){
                         Glide.with(this).load(comic.image).into(image)
                     }
                 }
-                else -> {}
+                else -> {
+                    Toast.makeText(getApplicationContext(),"Instructions unclear", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
+
+    @Throws(Exception::class)
+    private fun setListeners(){
+        photo.setOnClickListener{
+            try {
+                dispatchTakePictureIntent()
+            } catch (e : Exception) {
+
+            }
+        }
+
+        search.setOnClickListener {
+            // start new intent
+            val intent = Intent(this@AddComicActivity, SearchComicActivity::class.java)
+            intent.putExtra("COMIC_NAME", name.text.toString())
+            val options = ActivityOptions.makeSceneTransitionAnimation(this, image, "imageTransition")
+            startActivityForResult(intent, 2, options.toBundle())
+        }
+        // set up listeners on the buttons
+        add.setOnClickListener{
+
+            val c = buildComic()
+            endActivity(c)
+
+        }
+    }
+
+    private fun getViews(){
+        text = findViewById(R.id.tv)
+        name = findViewById(R.id.comic_name)
+        issue = findViewById(R.id.issue)
+        artist = findViewById(R.id.artist)
+        photo = findViewById(R.id.photo)
+        add = findViewById(R.id.add_comic)
+        image = findViewById(R.id.image)
+        search = findViewById(R.id.search)
+    }
 
     @Throws(Exception::class)
     private fun buildComic() : Comic {
@@ -132,7 +141,7 @@ class AddComicActivity : AppCompatActivity(){
         } catch (e : Exception) {
             errorMessage(text, "Please add a valid issue number")
         }
-        Log.v("ASGVBCDSVREEHGBFD", p.toString())
+
         return Comic(name.text.toString(), p, a ,artist.text.toString(), this.hashCode(), false, null )
 
     }
@@ -182,11 +191,10 @@ class AddComicActivity : AppCompatActivity(){
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
+            "JPEG_${timeStamp}_", // prefix
+            ".jpg", // suffix
+            storageDir // directory
         ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
             pathphoto = absolutePath
         }
     }

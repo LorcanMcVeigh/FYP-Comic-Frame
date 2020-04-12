@@ -18,26 +18,33 @@ import kotlin.Exception
 
 class RegisterActivity : AppCompatActivity() {
     private val url: String = "https://10.0.2.2:8080/"
-    private var name: EditText? = null
-    private var regbtn: Button? = null
-    private var logbtn: Button? = null
-    private var email :EditText? = null
-    private var password: String? = null
-    private val encrypter : Encrypter =
-        Encrypter()
+    private lateinit var name: EditText
+    private lateinit var regbtn: Button
+    private lateinit var logbtn: Button
+    private lateinit var email : EditText
+    private lateinit var password: String
+    private val encrypter : Encrypter = Encrypter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        getViews()
 
+        setListeners()
+    }
+
+    private fun getViews() {
         name = findViewById<View>(R.id.name) as EditText
         regbtn = findViewById<View>(R.id.regbtn) as Button
         logbtn = findViewById<View>(R.id.logbtn) as Button
         email = findViewById<View>(R.id.email) as EditText
 
         password = encrypter.encrypt(findViewById<View>(R.id.password) as EditText, email.toString())
+    }
 
+
+    private fun setListeners() {
         logbtn!!.setOnClickListener {
             val intent = Intent(this@RegisterActivity, MainActivity::class.java)
             startActivity(intent)
@@ -47,7 +54,7 @@ class RegisterActivity : AppCompatActivity() {
             try {
                 register()
             } catch (e: IOException) {
-               getErrorMessage()
+                getErrorMessage()
             }
         }
     }
@@ -74,6 +81,7 @@ class RegisterActivity : AppCompatActivity() {
             getErrorMessage()
         }
     }
+
 
     private fun getErrorMessage() {
         val intent = Intent(this@RegisterActivity, ErrorActivity::class.java)
