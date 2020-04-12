@@ -17,9 +17,8 @@
         android:id="@+id/title"
         android:text="@string/app_name"
         android:textSize="24sp"
-        android:background="@drawable/rounded_corner"
         android:textAlignment="center"
-        android:textColor="#ff6600"
+        android:textColor="#0000ff"
         android:paddingStart="5dp"
         android:paddingEnd="5dp" />
 
@@ -30,7 +29,6 @@
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/rounded_corner"
         android:id="@+id/textfield"
         android:textColor="@color/white"
         android:paddingStart="5dp"
@@ -41,39 +39,40 @@
         android:layout_height="40dp"
         android:id="@+id/email"
         android:maxLines="1"
-        android:drawableLeft="@drawable/email_icon"
+
         android:layout_marginTop="10dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="20dp"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:background="@drawable/rounded_corner"
-        android:background="#fff"
+        android:background="@color/white"
         android:hint="Enter Email Address" />
-
+    <!--android:drawableLeft="@drawable/email_icon"
+            android:background="@drawable/customedittext" -->
     <EditText
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:id="@+id/password"
         android:inputType="textPassword"
-        android:drawableLeft="@drawable/pass_icon"
         android:layout_marginTop="10dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:textColor="@color/white"
         android:layout_marginBottom="20dp"
         android:paddingStart="5dp"
-        android:background="@drawable/rounded_corner"
         android:paddingEnd="5dp"
-        android:background="@drawable/customedittext"
+        android:background="@color/white"
         android:hint="Enter Password" />
+    <!--
+        android:background="@drawable/customedittext"
+        android:drawableLeft="@drawable/pass_icon"-->
     <Button
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:id="@+id/log"
         android:text="Login"
-        android:background="#ff6600"
+        android:background="#0000ff"
         android:textColor="#000"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
@@ -83,7 +82,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/reg"
         android:text="Register"
-        android:background="#ff6600"
+        android:background="#0000ff"
         android:textColor="#000"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"

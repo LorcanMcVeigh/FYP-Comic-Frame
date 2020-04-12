@@ -8,26 +8,38 @@
     android:background="#1A1A1A"
     android:layout_marginTop="10dp"
     android:layout_marginBottom="5dp">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/ll1">
 
-    <TextView
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/tv1"
+            android:textColor="@color/white"/>
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:id="@+id/first"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/tv1"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/ll1"
+        android:orientation="vertical"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:id="@+id/tv1"
-        android:textColor="@color/white"/>
-
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="200dp"
-        android:id="@+id/first"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@id/tv1"/>
-
+        android:id="@+id/ll2">
     <TextView
         android:layout_width="150dp"
         android:layout_height="40dp"
@@ -48,5 +60,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_below="@id/tv2"/>
+    </LinearLayout>
 
 </RelativeLayout>

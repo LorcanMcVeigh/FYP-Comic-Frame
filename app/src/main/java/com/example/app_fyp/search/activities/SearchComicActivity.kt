@@ -1,7 +1,6 @@
 package com.example.app_fyp.search.activities
 
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,18 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.example.app_fyp.R
 import com.example.app_fyp.classes.Comic
 import com.example.app_fyp.search.comicvine.ComicResult
 import com.example.app_fyp.search.comicvine.ComicVineAPIQuery
-import kotlinx.android.synthetic.main.item_layout.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class SearchComicActivity : AppCompatActivity() {
@@ -86,46 +80,57 @@ class SearchComicActivity : AppCompatActivity() {
             if (cont.hasNext()) {
                 cr2 = cont.next()
             }
-            val inflater: LayoutInflater =
-                getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.a_comic, null)
-            //val inflater = LayoutInflater.from(parent.context).inflate(R.layout.a_comic, parent, false)
+
+            val view = infla()
+
+            val ll1 = view.findViewById<LinearLayout>(R.id.ll1)
+
+
             if (!cr.image["thumb_url"].isNullOrEmpty()) {
+                insertComic(ll1, cr, 1)
 
-                val b = view.findViewById<ImageView>(R.id.first)
-                val tv1 = view.findViewById<TextView>(R.id.tv1)
-                val image : String = cr.image["thumb_url"].toString()
-                Glide.with(this).load(image).into(b)
-                tv1.text = cr.name
-
-                b.setOnClickListener {
-                    b.transitionName = "imageTransition"
-                    //tv1.transitionName = "textTransition"
-                    endActivity( tv1, image )
-                }
             }
-            if (!cr2!!.image["thumb_url"].isNullOrEmpty()) {
-                val b = view.findViewById<ImageView>(R.id.second)
-                val tv2 = view.findViewById<TextView>(R.id.tv2)
-                val image : String = cr2.image["thumb_url"].toString()
-                Glide.with(this).load(image).into(b)
-                tv2.text = cr2.name
 
-                b.setOnClickListener {
-                    b.transitionName = "imageTransition"
-                    //tv2.transitionName = "textTransition"
-                    endActivity( tv2, image )
-                }
-
+            if (cr2 != null && !cr2!!.image["thumb_url"].isNullOrEmpty() ) {
+                val ll2 = view.findViewById<LinearLayout>(R.id.ll2)
+                insertComic(ll2, cr2, 2)
             }
 
             rl.addView(view)
         }
     }
 
-    private fun insertComic(cr : ComicResult, v : View): View{
-        if (cr!!.image["thu"])
+    private fun infla() : View {
+        val inflater: LayoutInflater =
+            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.a_comic, null)
+        //val inflater = LayoutInflater.from(parent.context).inflate(R.layout.a_comic, parent, false)
 
+
+        return view
+    }
+
+    private fun insertComic(view : LinearLayout, cr : ComicResult, i : Int): View{
+        val v1 : ImageView
+        val tv1 : TextView
+        if (i == 1){
+            v1 = view.findViewById<ImageView>(R.id.first)
+            tv1 = view.findViewById<TextView>(R.id.tv1)
+        } else {
+            v1 = view.findViewById<ImageView>(R.id.second)
+            tv1 = view.findViewById<TextView>(R.id.tv2)
+        }
+        val image : String = cr.image["thumb_url"].toString()
+        Glide.with(this).load(image).into(v1)
+        tv1.text = cr.name
+
+        v1.setOnClickListener {
+            v1.transitionName = "imageTransition"
+            //tv1.transitionName = "textTransition"
+            endActivity( tv1, image )
+        }
+
+        return view
 
     }
 

@@ -46,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
 
         getViews()
 
+        setListeners()
 
     }
 
