@@ -6,8 +6,6 @@ Lets the user take pictures of physical comic books or graphic novels.
 Capable of searching online open-access content for artwork and further information about comic or graphic novel. 
 App manages and organizes comics into any grouping the user wants. Lets the user search through collection. 
 
-![screenshot](https://github.com/LorcanMcVeigh/Comic-Frame/images/home_layout.png)
-
 
 ## RoadMap 
 
