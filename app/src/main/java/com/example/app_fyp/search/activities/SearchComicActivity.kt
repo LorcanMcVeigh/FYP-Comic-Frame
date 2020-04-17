@@ -3,6 +3,8 @@ package com.example.app_fyp.search.activities
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +18,9 @@ import com.example.app_fyp.R
 import com.example.app_fyp.classes.Comic
 import com.example.app_fyp.search.comicvine.ComicResult
 import com.example.app_fyp.search.comicvine.ComicVineAPIQuery
-import kotlinx.coroutines.runBlocking
+import com.example.app_fyp.classes.GlideApp
+import com.squareup.picasso.Picasso
+import java.net.URL
 
 class SearchComicActivity : AppCompatActivity() {
     lateinit var rl : LinearLayout
@@ -47,13 +51,10 @@ class SearchComicActivity : AppCompatActivity() {
     private fun Search(name: String?) {
         comicname = name!!.replace(" ", "%20")
 
-        val data = ComicVineAPIQuery(comicname)
-        runBlocking {
-            data.loadJson()
-        }
-        while (data.data.size <= 0) {
-            Thread.sleep(1000)
-        }
+        val data = ComicVineAPIQuery(comicname, ::displayResults)
+        /*runBlocking {
+            data.loadJson())
+        }*/
 
         displayResults(data.data)
 
@@ -120,14 +121,20 @@ class SearchComicActivity : AppCompatActivity() {
             v1 = view.findViewById<ImageView>(R.id.second)
             tv1 = view.findViewById<TextView>(R.id.tv2)
         }
-        val image : String = cr.image["thumb_url"].toString()
-        Glide.with(this).load(image).into(v1)
+
+        val imagestr = cr.image["thumb_url"].toString()
+        /*val image : URL = URL(imagestr)
+        val bmp : Bitmap = BitmapFactory.decodeStream(image.openStream())
+        v1.setImageBitmap(bmp)
+        */
+
+        Picasso.get().load(imagestr).into(v1)
         tv1.text = cr.name
 
         v1.setOnClickListener {
             v1.transitionName = "imageTransition"
             //tv1.transitionName = "textTransition"
-            endActivity( tv1, image )
+            endActivity( tv1, imagestr )
         }
 
         return view
