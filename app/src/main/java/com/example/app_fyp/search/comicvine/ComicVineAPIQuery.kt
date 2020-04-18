@@ -10,7 +10,7 @@ import java.lang.Exception
 
 class ComicVineAPIQuery(val comicname: String, func : (ArrayList<ComicResult>) -> Unit) {
     lateinit var data : ArrayList<ComicResult>
-    private val apikey : String = "4663e24bc7473eaef65158d7ec9d077342145a6c"
+    private val apikey : String = ""
     val search: String =
         "https://comicvine.gamespot.com/api/search/?api_key=${apikey}&format=json&resources=issue&query=%22${comicname}%22"
     private val useragent : String =
